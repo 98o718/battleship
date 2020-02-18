@@ -2,6 +2,10 @@ const { isUuid } = require('uuidv4')
 
 module.exports = io => {
   io.sockets.on('connection', socket => {
+    socket.on('kek', () => {
+      console.log(socket.id)
+    })
+
     socket.on('room', room => {
       if (
         isUuid(room) &&
@@ -9,6 +13,7 @@ module.exports = io => {
           io.sockets.adapter.rooms[room].length < 2)
       ) {
         socket.join(room)
+        console.log(socket.id)
         console.log('joined room', room)
         console.log(
           'there are',
