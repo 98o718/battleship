@@ -3,7 +3,7 @@ import { Route } from 'wouter'
 import { Global, css } from '@emotion/core'
 import emotionNormalize from 'emotion-normalize'
 
-import { Game } from './pages'
+import { Game, Start } from './pages'
 
 export const App = () => {
   return (
@@ -23,6 +23,7 @@ export const App = () => {
       />
 
       <Route path="/game/:room" component={Game} />
+      <Route path="/" extends component={Start} />
     </>
   )
 }
