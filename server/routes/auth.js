@@ -54,4 +54,63 @@ router.post('/login', (req, res) => {
   })
 })
 
+router.post('/sign-up', async (req, res) => {
+  let { email, username, password } = req.body
+
+  if (!email || !username || !password) {
+    return res.json({
+      status: false,
+      message: 'Заполните все поля',
+    })
+  }
+
+  email = email.trim().toLowerCase()
+  username = username.trim()
+
+  if (!validator.validate(email)) {
+    return res.json({
+      status: false,
+      message: 'Введите корректный email',
+    })
+  }
+
+  const count1 = await User.find({ email }).countDocuments()
+  if (count1 > 0) {
+    return res.json({
+      status: false,
+      message: 'Email уже зарегистрирован',
+    })
+  }
+
+  const count2 = await User.find({ username }).countDocuments()
+  if (count2 > 0) {
+    return res.json({
+      status: false,
+      message: 'Логин уже зарегистрирован',
+    })
+  }
+
+  const salt = await bcrypt.genSalt(config.bcrypt.saltRounds)
+  const passwordHashed = await bcrypt.hash(password, salt)
+
+  const user = new User({
+    email,
+    username,
+    password: passwordHashed,
+  })
+
+  user.save(err => {
+    if (err) {
+      return res.json({
+        status: false,
+        message: 'Не удалось зарегистрироваться',
+      })
+    }
+
+    return res.json({
+      status: true,
+    })
+  })
+})
+
 module.exports = router
