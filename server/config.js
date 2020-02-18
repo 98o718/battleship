@@ -1,6 +1,6 @@
 const db = {
   url:
-    'mongodb://battleship:pvGmmZu21FwfEidr@cluster0-ohatu.mongodb.net/battleship?retryWrites=true&w=majority&authSource=admin',
+    'mongodb+srv://battleship:pvGmmZu21FwfEidr@cluster0-ohatu.mongodb.net/battleship?retryWrites=true&w=majority&authSource=admin',
 }
 
 const bcrypt = {
