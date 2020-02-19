@@ -1,14 +1,15 @@
+require('dotenv').config()
+
 const db = {
-  url:
-    'mongodb+srv://battleship:pvGmmZu21FwfEidr@cluster0-ohatu.mongodb.net/battleship?retryWrites=true&w=majority&authSource=admin',
+  url: process.env.DB_URL,
 }
 
 const bcrypt = {
-  saltRounds: 10,
+  saltRounds: process.env.BCRYPT_SALT,
 }
 
 const jwt = {
-  secret: 'jT%F8LHy@Loy0HV%3ELZn*0hQNGr7oKAiIyiZoWzdIoh5tapf!',
+  secret: process.env.JWT_SECRET,
 }
 
 module.exports = {
