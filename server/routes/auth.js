@@ -40,6 +40,7 @@ router.post('/login', (req, res) => {
       if (!err && compare) {
         const payload = {
           id: user.id,
+          username: user.username,
           email,
         }
 
