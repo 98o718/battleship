@@ -114,4 +114,38 @@ router.post('/sign-up', async (req, res) => {
   })
 })
 
+router.post('/forgot', async (req, res) => {
+  let { email } = req.body
+
+  if (!email) {
+    return res.json({
+      status: false,
+      message: 'Заполните все поля',
+    })
+  }
+
+  email = email.trim().toLowerCase()
+
+  if (!validator.validate(email)) {
+    return res.json({
+      status: false,
+      message: 'Введите корректный email',
+    })
+  }
+
+  User.findOne({ email }, (err, user) => {
+    if (err || user === null) {
+      return res.json({
+        status: false,
+        message: 'Пользователь не найден',
+      })
+    }
+
+    return res.json({
+      status: true,
+      message: 'Ссылка отправлена на email',
+    })
+  })
+})
+
 module.exports = router
