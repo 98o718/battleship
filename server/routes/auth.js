@@ -7,6 +7,8 @@ const validator = require('email-validator')
 
 const db = require('./../db')
 const config = require('./../config')
+const mailer = require('./../mailer')
+
 const User = require('./../models/user')
 
 router.post('/login', (req, res) => {
@@ -133,13 +135,35 @@ router.post('/forgot', async (req, res) => {
     })
   }
 
-  User.findOne({ email }, (err, user) => {
+  User.findOne({ email }, async (err, user) => {
     if (err || user === null) {
       return res.json({
         status: false,
         message: 'Пользователь не найден',
       })
     }
+
+    const payload = {
+      id: user.id,
+      email: user.email,
+      createdAt: Date.now(),
+    }
+
+    const token = jwt.sign(payload, user.password)
+    const url = config.app.url + '/forgot/' + token
+    const text =
+      'Уважаемый ' +
+      user.username +
+      '. Для вашего аккаунта в Battleship было запрошено восстановление пароля. Если это были вы, то перейдите по ссылке ниже.\n\n' +
+      url +
+      '\n\nИначе просто проигнорируйте это сообщение.'
+
+    await mailer.sendMail({
+      from: 'battleship@macaroni.studio',
+      to: user.email,
+      subject: 'Восстановление пароля',
+      text,
+    })
 
     return res.json({
       status: true,
