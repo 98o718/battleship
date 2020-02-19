@@ -11,6 +11,35 @@ const mailer = require('./../mailer')
 
 const User = require('./../models/user')
 
+router.get('/check', (req, res) => {
+  const authorization = req.headers['authorization']
+  if (!authorization) {
+    return res.json({
+      status: false,
+    })
+  }
+
+  const a = authorization.split(' ')
+  if (a[0] === 'Bearer' && a[1]) {
+    const token = a[1]
+    jwt.verify(token, config.jwt.secret, err => {
+      if (err) {
+        return res.json({
+          status: false,
+        })
+      } else {
+        return res.json({
+          status: true,
+        })
+      }
+    })
+  } else {
+    return res.json({
+      status: false,
+    })
+  }
+})
+
 router.post('/login', (req, res) => {
   let { email, password } = req.body
 
@@ -200,6 +229,13 @@ router.get('/forgot/:token', async (req, res) => {
         return res.json({
           status: false,
           message: 'Ссылка уже использована или недействительна',
+        })
+      }
+
+      if (Date.now() - json.createdAt > 86400) {
+        return res.json({
+          status: false,
+          message: 'Ссылка устарела',
         })
       }
 
