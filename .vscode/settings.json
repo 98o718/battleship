@@ -1,0 +1,14 @@
+{
+  "actionButtons": {
+    "defaultColor": "#fff",
+    "loadNpmCommands": false,
+    "commands": [
+      {
+        "cwd": "${workspaceFolder}",
+        "name": "Fetch & Rebase",
+        "singleInstance": true,
+        "command": "git fetch origin develop:develop && git flow feature rebase"
+      }
+    ]
+  }
+}
