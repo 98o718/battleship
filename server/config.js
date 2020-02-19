@@ -27,5 +27,6 @@ module.exports = {
   app,
   db,
   bcrypt,
+  smtp,
   jwt,
 }
