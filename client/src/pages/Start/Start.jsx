@@ -43,7 +43,11 @@ export const Start = () => {
       </Auth>
       <GameMenu>
         <Text>Выбор режима</Text>
-        <Button state="start" text="Случайная игра" />
+        <Button
+          onClick={() => setLocation('/waiting-room')}
+          state="start"
+          text="Случайная игра"
+        />
         <Line />
         <Button onClick={handleNewRoom} state="start" text="Игра с другом" />
         <Macaroni src={macaroni} alt="macaroni logo" />
