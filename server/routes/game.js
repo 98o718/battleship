@@ -1,17 +1,17 @@
 const express = require('express')
-const { uuid, isUuid } = require('uuidv4')
+const { roomChecker, roomGenerator } = require('../utils/roomUtils')
 
 const router = express.Router()
 
 router.get('/generate-room', (req, res) => {
-  res.send(uuid())
+  res.send(roomGenerator())
 })
 
 router.post('/check-room', (req, res) => {
   const { room } = req.body
 
   if (
-    isUuid(room) &&
+    roomChecker(room) &&
     req.io.sockets.adapter.rooms[room] &&
     req.io.sockets.adapter.rooms[room].length === 2
   ) {
