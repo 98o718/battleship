@@ -1,9 +1,11 @@
-const { isUuid } = require('uuidv4')
+const { roomChecker, roomGenerator } = require('../utils/roomUtils')
 
 module.exports = io => {
   const users = {}
 
   const games = {}
+
+  const waitingRoom = []
 
   io.sockets.on('connection', socket => {
     users[socket.id] = {
@@ -20,7 +22,7 @@ module.exports = io => {
       delete games[room]
       delete users[socket.id]
 
-      socket.emit('leave')
+      io.to(room).emit('leave')
     })
 
     socket.on('ready', payload => {
@@ -95,9 +97,20 @@ module.exports = io => {
       }
     })
 
+    socket.on('waiting-room', () => {
+      waitingRoom.push(socket.id)
+
+      if (waitingRoom.length === 2) {
+        const room = roomGenerator()
+
+        io.to(waitingRoom.pop()).emit('game-ready', room)
+        io.to(waitingRoom.pop()).emit('game-ready', room)
+      }
+    })
+
     socket.on('room', room => {
       if (
-        isUuid(room) &&
+        roomChecker(room) &&
         (!io.sockets.adapter.rooms[room] ||
           io.sockets.adapter.rooms[room].length < 2)
       ) {
