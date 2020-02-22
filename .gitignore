@@ -4,3 +4,4 @@ client/build
 client/yarn-error.log
 
 .env
+.DS_Store
