@@ -7,7 +7,13 @@
     "start": "nodemon"
   },
   "dependencies": {
+    "bcrypt": "^3.0.8",
+    "dotenv": "^8.2.0",
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.1",
+    "nodemailer": "^6.4.2",
     "socket.io": "^2.3.0",
     "uuidv4": "^6.0.2"
   },

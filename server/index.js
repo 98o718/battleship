@@ -12,6 +12,7 @@ app.use((req, res, next) => {
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use('/auth', require('./routes/auth'))
 app.use('/game', require('./routes/game'))
 
 gameSocket(io)
