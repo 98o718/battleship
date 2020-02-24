@@ -7,11 +7,10 @@ import {
   Line,
   Point,
   Field,
+  Button,
   FieldsWrapper,
-  CenterField,
 } from './PlayField.styles'
 
-import Button from '../Button'
 const PlayField = () => {
   const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()
@@ -29,37 +28,37 @@ const PlayField = () => {
 
     const ships = [
       [
-        { y: 9, x: 0, v: 4 },
-        { y: 9, x: 1, v: 4 },
-        { y: 9, x: 2, v: 4 },
-        { y: 9, x: 3, v: 4 },
+        { y: 0, x: 0 },
+        { y: 0, x: 1 },
+        { y: 0, x: 2 },
+        { y: 0, x: 3 },
       ],
       [
-        { y: 0, x: 5, v: 3 },
-        { y: 0, x: 6, v: 3 },
-        { y: 0, x: 7, v: 3 },
+        { y: 0, x: 5 },
+        { y: 0, x: 6 },
+        { y: 0, x: 7 },
       ],
       [
-        { y: 2, x: 0, v: 3 },
-        { y: 2, x: 1, v: 3 },
-        { y: 2, x: 2, v: 3 },
+        { y: 2, x: 0 },
+        { y: 2, x: 1 },
+        { y: 2, x: 2 },
       ],
       [
-        { y: 2, x: 4, v: 2 },
-        { y: 2, x: 5, v: 2 },
+        { y: 2, x: 4 },
+        { y: 2, x: 5 },
       ],
       [
-        { y: 2, x: 7, v: 2 },
-        { y: 2, x: 8, v: 2 },
+        { y: 2, x: 7 },
+        { y: 2, x: 8 },
       ],
       [
-        { y: 4, x: 0, v: 2 },
-        { y: 4, x: 1, v: 2 },
+        { y: 4, x: 0 },
+        { y: 4, x: 1 },
       ],
-      [{ y: 6, x: 0, v: 1 }],
-      [{ y: 6, x: 2, v: 1 }],
-      [{ y: 6, x: 4, v: 1 }],
-      [{ y: 6, x: 6, v: 1 }],
+      [{ y: 6, x: 0 }],
+      [{ y: 6, x: 2 }],
+      [{ y: 6, x: 4 }],
+      [{ y: 6, x: 6 }],
     ]
 
     setShips(ships)
@@ -67,27 +66,7 @@ const PlayField = () => {
     const matrix = [...Array(10)].map(() => Array(10).fill(0))
 
     ships.flat().forEach(point => {
-      switch (point.v) {
-        case 4: {
-          matrix[point.y][point.x] = 'ferry'
-          break
-        }
-        case 3: {
-          matrix[point.y][point.x] = 'ship'
-          break
-        }
-        case 2: {
-          matrix[point.y][point.x] = 'speedboat'
-          break
-        }
-        case 1: {
-          matrix[point.y][point.x] = 'sailboat'
-          break
-        }
-        default: {
-          matrix[point.y][point.x] = 'ship'
-        }
-      }
+      matrix[point.y][point.x] = 1
     })
 
     setMyField(matrix)
@@ -125,13 +104,13 @@ const PlayField = () => {
         setLocation('/')
       }
     })
-    // eslint - disable - next - line
+    // eslint-disable-next-line
   }, [setLocation])
 
   useEffect(() => {
     const setPoint = (prev, shot, hit) => {
       let b = prev.slice()
-      b[shot.y][shot.x] = hit ? 'hit' : 'shot'
+      b[shot.y][shot.x] = hit ? 2 : 3
       return b
     }
     if (sio) {
@@ -153,18 +132,18 @@ const PlayField = () => {
 
         console.log(id)
         ships[id].forEach(({ y, x }) => {
-          b[y + 1] && (b[y + 1][x] = b[y + 1][x] === 0 ? 'shot' : b[y + 1][x])
+          b[y + 1] && (b[y + 1][x] = b[y + 1][x] === 0 ? 3 : b[y + 1][x])
           b[y + 1] &&
-            (b[y + 1][x - 1] = b[y + 1][x - 1] === 0 ? 'shot' : b[y + 1][x - 1])
+            (b[y + 1][x - 1] = b[y + 1][x - 1] === 0 ? 3 : b[y + 1][x - 1])
           b[y + 1] &&
-            (b[y + 1][x + 1] = b[y + 1][x + 1] === 0 ? 'shot' : b[y + 1][x + 1])
-          b[y - 1] && (b[y - 1][x] = b[y - 1][x] === 0 ? 'shot' : b[y - 1][x])
+            (b[y + 1][x + 1] = b[y + 1][x + 1] === 0 ? 3 : b[y + 1][x + 1])
+          b[y - 1] && (b[y - 1][x] = b[y - 1][x] === 0 ? 3 : b[y - 1][x])
           b[y - 1] &&
-            (b[y - 1][x - 1] = b[y - 1][x - 1] === 0 ? 'shot' : b[y - 1][x - 1])
+            (b[y - 1][x - 1] = b[y - 1][x - 1] === 0 ? 3 : b[y - 1][x - 1])
           b[y - 1] &&
-            (b[y - 1][x + 1] = b[y - 1][x + 1] === 0 ? 'shot' : b[y - 1][x + 1])
-          b[y] && (b[y][x - 1] = b[y][x - 1] === 0 ? 'shot' : b[y][x - 1])
-          b[y] && (b[y][x + 1] = b[y][x + 1] === 0 ? 'shot' : b[y][x + 1])
+            (b[y - 1][x + 1] = b[y - 1][x + 1] === 0 ? 3 : b[y - 1][x + 1])
+          b[y] && (b[y][x - 1] = b[y][x - 1] === 0 ? 3 : b[y][x - 1])
+          b[y] && (b[y][x + 1] = b[y][x + 1] === 0 ? 3 : b[y][x + 1])
         })
 
         return b
@@ -228,16 +207,13 @@ const PlayField = () => {
               )
             })}
         </Field>
-        <CenterField>
-          {turn >= 0 && (
-            <p>
-              Вы игрок {player + 1}. Очередь игрока {turn + 1}
-            </p>
-          )}
-          <Button onClick={handleReady} state="ready" text="Готов" />
-        </CenterField>
       </FieldsWrapper>
-      {/* <CenterField>123</CenterField> */}{' '}
+      <Button onClick={handleReady}>Готов</Button>
+      {turn >= 0 && (
+        <p>
+          Вы игрок {player + 1}. Очередь игрока {turn + 1}
+        </p>
+      )}
     </PlayFieldWrapper>
   )
 }
