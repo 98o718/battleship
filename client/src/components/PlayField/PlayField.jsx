@@ -231,13 +231,12 @@ const PlayField = () => {
         <CenterField>
           {turn >= 0 && (
             <p>
-              Вы игрок {player + 1}. Очередь игрока {turn + 1}
+              Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
             </p>
           )}
           <Button onClick={handleReady} state="ready" text="Готов" />
         </CenterField>
       </FieldsWrapper>
-      {/* <CenterField>123</CenterField> */}{' '}
     </PlayFieldWrapper>
   )
 }

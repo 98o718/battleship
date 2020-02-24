@@ -113,7 +113,8 @@ export const CenterField = styled.section`
   z-index: 1;
   p {
     width: 9rem;
-    height: 4rem;
+    height: 2rem;
     text-align: center;
+    font-size: 10pt;
   }
 `
