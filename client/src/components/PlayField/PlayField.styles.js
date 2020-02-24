@@ -1,6 +1,13 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/core'
 
+import bomb from '../../img/bomb.png'
+import ferry from '../../img/ferry.png'
+import shot from '../../img/shot.svg'
+import sailboat from '../../img/sailboat.png'
+import speedboat from '../../img/speedboat.png'
+import ship from '../../img/ship.png'
+
 export const PlayFieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -9,10 +16,14 @@ export const PlayFieldWrapper = styled.div`
 export const FieldsWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  margin-top: 3rem;
 `
 
 export const Field = styled.div`
-  margin: 30px;
+  margin: 6rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 10px;
+  z-index: 2;
 `
 
 export const Line = styled.div`
@@ -41,19 +52,37 @@ export const Line = styled.div`
 `
 
 export const Point = styled.div`
+  background-color: white;
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
   ${props => {
     switch (props.status) {
-      case 1:
+      case 'ferry':
         return css`
-          background-color: #3f51b5;
+          background-image: url('${ferry}');
         `
-      case 2:
+      case 'ship':
         return css`
-          background-color: #f44336;
+          background-image: url('${ship}');
         `
-      case 3:
+      case 'speedboat':
         return css`
-          background-color: #ffeb3b;
+          background-image: url('${speedboat}');
+        `
+      case 'sailboat':
+        return css`
+          background-image: url('${sailboat}');
+        `
+
+      case 'hit':
+        return css`
+          background-image: url('${bomb}');
+        `
+      case 'shot':
+        return css`
+          background-size: 40%;
+          background-image: url('${shot}');
         `
       default:
         break
@@ -71,20 +100,20 @@ export const Point = styled.div`
   border: 1px solid lightgray;
 `
 
-export const Button = styled.button`
-  display: flex;
-  padding: 15px 30px;
-  border: none;
-  background-color: #4caf50;
-  color: white;
-  width: fit-content;
-  cursor: pointer;
-  transition: 0.2s;
-  border-radius: 5px;
-  align-self: center;
-
-  &:hover {
-    background-color: #2e7d32;
+export const CenterField = styled.section`
+  position: absolute;
+  margin-left: 6rem;
+  margin-top: 6rem;
+  width: calc(2 * ((50px * 10) + 22px) + 12rem);
+  height: calc((50px * 10) + 22px);
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  z-index: 1;
+  p {
+    width: 9rem;
+    height: 4rem;
+    text-align: center;
   }
-  /* width: auto; */
 `
