@@ -27,28 +27,30 @@ module.exports = io => {
 
     socket.on('ready', payload => {
       const { room } = users[socket.id]
-      games[room].players.push(socket.id)
-      console.log('room', room)
+      if (!games[room].players.includes(socket.id)) {
+        games[room].players.push(socket.id)
+        console.log('room', room)
 
-      const readyPlayers = games[room].players.length
+        const readyPlayers = games[room].players.length
 
-      console.log('players in room:', games[room].players)
+        console.log('players in room:', games[room].players)
 
-      users[socket.id].player = readyPlayers - 1
-      users[socket.id].ships = payload.ships.map((ship, idx) => {
-        return {
-          id: idx,
-          coords: ship,
-          size: ship.length,
-          hits: 0,
+        users[socket.id].player = readyPlayers - 1
+        users[socket.id].ships = payload.ships.map((ship, idx) => {
+          return {
+            id: idx,
+            coords: ship,
+            size: ship.length,
+            hits: 0,
+          }
+        })
+        users[socket.id].flatShips = payload.ships.flat()
+
+        io.to(socket.id).emit('player', readyPlayers - 1)
+
+        if (readyPlayers === 2) {
+          io.to(room).emit('start', games[room].turn)
         }
-      })
-      users[socket.id].flatShips = payload.ships.flat()
-
-      io.to(socket.id).emit('player', readyPlayers - 1)
-
-      if (readyPlayers === 2) {
-        io.to(room).emit('start', games[room].turn)
       }
     })
 
