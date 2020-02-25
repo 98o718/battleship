@@ -23,48 +23,7 @@ const PlayField = () => {
   const [sio, setSio] = useState(undefined)
   const [ships, setShips] = useState(undefined)
 
-  useEffect(() => {
-    const socket = io({ endpoint: 'http://localhost:3000' })
-    setSio(socket)
-    const room = params.room
-
-    const ships = [
-      [
-        { y: 9, x: 0, v: 4 },
-        { y: 9, x: 1, v: 4 },
-        { y: 9, x: 2, v: 4 },
-        { y: 9, x: 3, v: 4 },
-      ],
-      [
-        { y: 0, x: 5, v: 3 },
-        { y: 0, x: 6, v: 3 },
-        { y: 0, x: 7, v: 3 },
-      ],
-      [
-        { y: 2, x: 0, v: 3 },
-        { y: 2, x: 1, v: 3 },
-        { y: 2, x: 2, v: 3 },
-      ],
-      [
-        { y: 2, x: 4, v: 2 },
-        { y: 2, x: 5, v: 2 },
-      ],
-      [
-        { y: 2, x: 7, v: 2 },
-        { y: 2, x: 8, v: 2 },
-      ],
-      [
-        { y: 4, x: 0, v: 2 },
-        { y: 4, x: 1, v: 2 },
-      ],
-      [{ y: 6, x: 0, v: 1 }],
-      [{ y: 6, x: 2, v: 1 }],
-      [{ y: 6, x: 4, v: 1 }],
-      [{ y: 6, x: 6, v: 1 }],
-    ]
-
-    setShips(ships)
-
+  const placeShips = ships => {
     const matrix = [...Array(10)].map(() => Array(10).fill(0))
 
     ships.flat().forEach(point => {
@@ -92,6 +51,15 @@ const PlayField = () => {
     })
 
     setMyField(matrix)
+  }
+
+  useEffect(() => {
+    const socket = io({ endpoint: 'http://localhost:3000' })
+    setSio(socket)
+    const room = params.room
+
+    handleRandom()
+
     setOpponentField([...Array(10)].map(() => Array(10).fill(0)))
 
     socket.on('player', player => setPlayer(player))
@@ -127,17 +95,20 @@ const PlayField = () => {
   }, [setLocation])
 
   useEffect(() => {
+    ships && placeShips(ships)
+  }, [ships])
+
+  useEffect(() => {
     const setPoint = (prev, shot, hit) => {
       let b = prev.slice()
       b[shot.y][shot.x] = hit ? 'hit' : 'shot'
       return b
     }
+
     if (sio) {
       sio.off('result')
       sio.on('result', payload => {
         const { hit, shot } = payload
-        console.log('hit', hit)
-        console.log('turn', turn, 'player', player)
         if (turn === player) {
           setOpponentField(prev => setPoint(prev, shot, hit))
         } else {
@@ -146,35 +117,30 @@ const PlayField = () => {
         setTurn(payload.turn)
       })
 
-      const setPointsAroud = (prev, id) => {
+      const setPointsAroud = (prev, ship) => {
         let b = prev.slice()
 
-        console.log(id)
-        ships[id].forEach(({ y, x }) => {
-          b[y + 1] && (b[y + 1][x] = b[y + 1][x] === 0 ? 'shot' : b[y + 1][x])
-          b[y + 1] &&
-            (b[y + 1][x - 1] = b[y + 1][x - 1] === 0 ? 'shot' : b[y + 1][x - 1])
-          b[y + 1] &&
-            (b[y + 1][x + 1] = b[y + 1][x + 1] === 0 ? 'shot' : b[y + 1][x + 1])
-          b[y - 1] && (b[y - 1][x] = b[y - 1][x] === 0 ? 'shot' : b[y - 1][x])
-          b[y - 1] &&
-            (b[y - 1][x - 1] = b[y - 1][x - 1] === 0 ? 'shot' : b[y - 1][x - 1])
-          b[y - 1] &&
-            (b[y - 1][x + 1] = b[y - 1][x + 1] === 0 ? 'shot' : b[y - 1][x + 1])
-          b[y] && (b[y][x - 1] = b[y][x - 1] === 0 ? 'shot' : b[y][x - 1])
-          b[y] && (b[y][x + 1] = b[y][x + 1] === 0 ? 'shot' : b[y][x + 1])
+        ship.coords.forEach(({ y, x }) => {
+          console.log(y, x)
+          b[y + 1] && b[y + 1][x] === 0 && (b[y + 1][x] = 'shot')
+          b[y + 1] && b[y + 1][x + 1] === 0 && (b[y + 1][x + 1] = 'shot')
+          b[y + 1] && b[y + 1][x - 1] === 0 && (b[y + 1][x - 1] = 'shot')
+          b[y] && b[y][x + 1] === 0 && (b[y][x + 1] = 'shot')
+          b[y] && b[y][x - 1] === 0 && (b[y][x - 1] = 'shot')
+          b[y - 1] && b[y - 1][x] === 0 && (b[y - 1][x] = 'shot')
+          b[y - 1] && b[y - 1][x + 1] === 0 && (b[y - 1][x + 1] = 'shot')
+          b[y - 1] && b[y - 1][x - 1] === 0 && (b[y - 1][x - 1] = 'shot')
         })
 
         return b
       }
 
       sio.off('killed')
-      sio.on('killed', id => {
-        console.log(id)
+      sio.on('killed', ship => {
         if (turn === player) {
-          setOpponentField(prev => setPointsAroud(prev, id))
+          setOpponentField(prev => setPointsAroud(prev, ship))
         } else {
-          setMyField(prev => setPointsAroud(prev, id))
+          setMyField(prev => setPointsAroud(prev, ship))
         }
       })
 
@@ -204,6 +170,82 @@ const PlayField = () => {
     })
   }
 
+  const handleRandom = () => {
+    let matrix = [...Array(10)].map(() => Array(10).fill(0))
+    const shipsTemplate = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+
+    let ships = shipsTemplate.map(size => {
+      let set = false
+      let ship = []
+
+      while (!set) {
+        let copy = matrix.map(array => array.slice())
+        ship = []
+        let x = (Math.random() * 10) | 0
+        let y = (Math.random() * 10) | 0
+        let dir = (Math.random() * 2) | 0
+
+        for (let i = 0; i < size; i++) {
+          if (copy[y] && copy[y][x] === 0) {
+            ship.push({
+              x,
+              y,
+              v: size,
+            })
+
+            copy[y][x] = 1
+
+            switch (dir) {
+              case 0:
+                if (i === 0) {
+                  copy[y - 1] && (copy[y - 1][x] = 1)
+                  copy[y - 1] && (copy[y - 1][x + 1] = 1)
+                  copy[y - 1] && (copy[y - 1][x - 1] = 1)
+                }
+                if (i === size - 1) {
+                  copy[y + 1] && (copy[y + 1][x] = 1)
+                  copy[y + 1] && (copy[y + 1][x + 1] = 1)
+                  copy[y + 1] && (copy[y + 1][x - 1] = 1)
+                }
+                copy[y][x - 1] = 1
+                copy[y][x + 1] = 1
+                y++
+                break
+              case 1:
+                if (i === 0) {
+                  copy[y + 1] && (copy[y + 1][x - 1] = 1)
+                  copy[y] && (copy[y][x - 1] = 1)
+                  copy[y - 1] && (copy[y - 1][x - 1] = 1)
+                }
+                if (i === size - 1) {
+                  copy[y + 1] && (copy[y + 1][x + 1] = 1)
+                  copy[y] && (copy[y][x + 1] = 1)
+                  copy[y - 1] && (copy[y - 1][x + 1] = 1)
+                }
+                copy[y + 1] && (copy[y + 1][x] = 1)
+                copy[y - 1] && (copy[y - 1][x] = 1)
+                x++
+                break
+              default:
+                break
+            }
+          } else {
+            break
+          }
+
+          if (i === size - 1) {
+            set = true
+            matrix = copy.slice()
+          }
+        }
+      }
+
+      return ship
+    })
+
+    setShips(ships)
+  }
+
   return (
     <PlayFieldWrapper>
       <FieldsWrapper>
@@ -225,7 +267,15 @@ const PlayField = () => {
               Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
             </p>
           ) : (
-            <Button onClick={handleReady} state="ready" text="Готов" />
+            <>
+              <Button
+                onClick={handleRandom}
+                state="common"
+                style={{ marginBottom: 15 }}
+                text="Случайно"
+              />
+              <Button onClick={handleReady} state="ready" text="Готов" />
+            </>
           )}
         </CenterField>
         <Field style={{ opacity: turn === player ? 1 : 0.2 }}>
