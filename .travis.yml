@@ -4,7 +4,9 @@ node_js:
   - node
 git:
   quiet: true
-cache: yarn
+cache:
+  - yarn
+  - npm
 branches:
   only:
     - master
