@@ -46,6 +46,28 @@ const ready = css`
   }
 `
 
+const common = css`
+  background-color: white;
+  border: none;
+  color: black;
+  width: 9rem;
+  /* margin-bottom: 3rem; */
+  padding: 1rem;
+  border-radius: 10px;
+  transition: 0.14s;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 12pt;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  &:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+`
+
 const defaultState = css`
   background-color: blue;
   color: white;
@@ -56,6 +78,8 @@ export const ButtonWrapper = styled.button(props => {
       return start
     case 'ready':
       return ready
+    case 'common':
+      return common
     default:
       return defaultState
   }
