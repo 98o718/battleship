@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import io from 'socket.io-client'
 import { useRoute, useLocation } from 'wouter'
+import { toast } from 'react-toastify'
 
 import {
   PlayFieldWrapper,
@@ -97,15 +98,12 @@ const PlayField = () => {
 
     socket.on('start', turn => {
       setTurn(turn)
-      alert(`Game start, player ${turn + 1} turn!`)
-    })
-
-    socket.on('gameover', turn => {
-      alert(`Player ${turn + 1} won!`)
-      setLocation('/')
+      toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
     })
 
     socket.on('leave', () => {
+      socket.close()
+      toast.error('Противник сдался!')
       setLocation('/')
     })
 
@@ -121,7 +119,7 @@ const PlayField = () => {
       if (r.ok) {
         socket.emit('room', room)
       } else {
-        alert('room is full')
+        toast.error('Комната уже заполнена!')
         setLocation('/')
       }
     })
@@ -179,6 +177,16 @@ const PlayField = () => {
           setMyField(prev => setPointsAroud(prev, id))
         }
       })
+
+      sio.off('gameover')
+      sio.on('gameover', num => {
+        if (player === num) {
+          toast.success(`Вы выиграли!`)
+        } else {
+          toast.error(`Вы проиграли!`)
+        }
+        setLocation('/')
+      })
     }
   }, [player, turn, sio, ships])
 
@@ -211,6 +219,15 @@ const PlayField = () => {
               )
             })}
         </Field>
+        <CenterField>
+          {turn >= 0 ? (
+            <p>
+              Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
+            </p>
+          ) : (
+            <Button onClick={handleReady} state="ready" text="Готов" />
+          )}
+        </CenterField>
         <Field style={{ opacity: turn === player ? 1 : 0.2 }}>
           {opponentField &&
             opponentField.map((line, y) => {
@@ -228,14 +245,6 @@ const PlayField = () => {
               )
             })}
         </Field>
-        <CenterField>
-          {turn >= 0 && (
-            <p>
-              Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
-            </p>
-          )}
-          <Button onClick={handleReady} state="ready" text="Готов" />
-        </CenterField>
       </FieldsWrapper>
     </PlayFieldWrapper>
   )
