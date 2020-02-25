@@ -7,6 +7,8 @@
     "@emotion/styled": "^10.0.27",
     "emotion-normalize": "^10.1.0",
     "react": "^16.12.0",
+    "react-animations": "^1.0.0",
+    "react-countup": "^4.3.3",
     "react-dom": "^16.12.0",
     "react-scripts": "3.4.0",
     "react-toastify": "^5.5.0",

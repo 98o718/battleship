@@ -13,6 +13,7 @@ import {
 } from './PlayField.styles'
 
 import Button from '../Button'
+import EndGame from '../EndGame/EndGame'
 const PlayField = () => {
   const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()
@@ -22,6 +23,8 @@ const PlayField = () => {
   const [opponentField, setOpponentField] = useState(undefined)
   const [sio, setSio] = useState(undefined)
   const [ships, setShips] = useState(undefined)
+  const [endGame, setEndGame] = useState(false)
+  const [winner, setWinner] = useState(undefined)
 
   useEffect(() => {
     const socket = io({ endpoint: 'http://localhost:3000' })
@@ -181,11 +184,13 @@ const PlayField = () => {
       sio.off('gameover')
       sio.on('gameover', num => {
         if (player === num) {
-          toast.success(`Вы выиграли!`)
+          setEndGame(true)
+          setWinner(true)
         } else {
-          toast.error(`Вы проиграли!`)
+          setEndGame(true)
+          setWinner(false)
         }
-        setLocation('/')
+        // setLocation('/')
       })
     }
   }, [player, turn, sio, ships])
@@ -246,6 +251,7 @@ const PlayField = () => {
             })}
         </Field>
       </FieldsWrapper>
+      <EndGame active={endGame} state={winner} />
     </PlayFieldWrapper>
   )
 }
