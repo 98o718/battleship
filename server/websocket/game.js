@@ -29,7 +29,7 @@ module.exports = io => {
 
     socket.on('ready', payload => {
       const { room } = users[socket.id]
-      if (!games[room].players.includes(socket.id)) {
+      if (games[room].players && !games[room].players.includes(socket.id)) {
         games[room].players.push(socket.id)
         console.log('room', room)
 
@@ -46,6 +46,8 @@ module.exports = io => {
             hits: 0,
           }
         })
+
+        console.log(users[socket.id].ships)
         users[socket.id].flatShips = payload.ships.flat()
 
         io.to(socket.id).emit('player', readyPlayers - 1)
