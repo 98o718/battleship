@@ -57,9 +57,27 @@ const PlayField = () => {
   }
 
   useEffect(() => {
-    const socket = io({ endpoint: 'http://localhost:3000' })
-    setSio(socket)
     const room = params.room
+
+    fetch(process.env.REACT_APP_CHECK_ROOM_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        room,
+      }),
+    }).then(r => {
+      if (r.ok) {
+        socket.emit('room', room)
+      } else {
+        toast.error('Комната уже заполнена!')
+        setLocation('/')
+      }
+    })
+
+    const socket = io({ endpoint: process.env.REACT_APP_WS_ENDPOINT })
+    setSio(socket)
 
     handleRandom()
 
@@ -76,23 +94,6 @@ const PlayField = () => {
       socket.close()
       toast.error('Противник сдался!')
       setLocation('/')
-    })
-
-    fetch('/game/check-room', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        room,
-      }),
-    }).then(r => {
-      if (r.ok) {
-        socket.emit('room', room)
-      } else {
-        toast.error('Комната уже заполнена!')
-        setLocation('/')
-      }
     })
     // eslint - disable - next - line
   }, [setLocation])
