@@ -4,10 +4,12 @@ node_js:
   - node
 git:
   quiet: true
-cache: yarn
-branches:
-  only:
-    - master
+cache:
+  - yarn
+  - npm
+# branches:
+#   only:
+#     - master
 addons:
   ssh_known_hosts: '51.15.124.103'
 before_install:
