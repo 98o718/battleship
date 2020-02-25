@@ -54,6 +54,8 @@ export const Wave = styled.img`
 export const GameMenu = styled.section`
   position: fixed;
   width: 33rem;
+  min-width: fit-content;
+  padding: 15px;
   height: 70%;
   top: auto;
   bottom: 0;

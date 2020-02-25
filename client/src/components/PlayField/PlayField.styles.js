@@ -20,7 +20,7 @@ export const FieldsWrapper = styled.div`
 `
 
 export const Field = styled.div`
-  margin: 6rem;
+  /* margin: 6rem; */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   border-radius: 10px;
   z-index: 2;
@@ -56,6 +56,12 @@ export const Point = styled.div`
   background-size: 70%;
   background-position: center;
   background-repeat: no-repeat;
+  transition: 0.1s;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+
   ${props => {
     switch (props.status) {
       case 'ferry':
@@ -101,11 +107,13 @@ export const Point = styled.div`
 `
 
 export const CenterField = styled.section`
-  position: absolute;
-  margin-left: 6rem;
-  margin-top: 6rem;
-  width: calc(2 * ((50px * 10) + 22px) + 12rem);
-  height: calc((50px * 10) + 22px);
+  /* position: absolute; */
+  /* margin-left: 6rem;
+  margin-top: 6rem; */
+  /* width: calc(2 * ((50px * 10) + 22px) + 12rem);
+  height: calc((50px * 10) + 22px); */
+  margin-left: 25px;
+  margin-right: 25px;
   display: grid;
   justify-content: center;
   align-content: center;
