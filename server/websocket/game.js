@@ -91,10 +91,14 @@ module.exports = io => {
         })
 
         if (typeof willBeDeleted === 'number') {
-          users[opponent].ships = users[opponent].ships.filter(
-            ship => ship.id !== willBeDeleted
-          )
-          io.to(room).emit('killed', willBeDeleted)
+          users[opponent].ships = users[opponent].ships.filter(ship => {
+            if (ship.id !== willBeDeleted) {
+              return true
+            } else {
+              io.to(room).emit('killed', ship)
+              return false
+            }
+          })
         }
 
         if (users[opponent].ships.length === 0) {
