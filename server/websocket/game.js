@@ -5,7 +5,7 @@ module.exports = io => {
 
   const games = {}
 
-  const waitingRoom = []
+  let waitingRoom = []
 
   io.sockets.on('connection', socket => {
     users[socket.id] = {
@@ -21,6 +21,8 @@ module.exports = io => {
       const { room } = users[socket.id]
       delete games[room]
       delete users[socket.id]
+
+      waitingRoom = waitingRoom.filter(id => id !== socket.id)
 
       io.to(room).emit('leave')
     })
