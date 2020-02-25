@@ -7,7 +7,7 @@ export const WaitingRoom = () => {
   const [, setLocation] = useLocation()
 
   useEffect(() => {
-    const socket = io({ endpoint: 'http://localhost:3000' })
+    const socket = io({ endpoint: process.env.REACT_APP_WS_ENDPOINT })
 
     socket.emit('waiting-room')
 
