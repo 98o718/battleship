@@ -1,3 +1,4 @@
+require('mongoose')
 const User = require('./../models/user')
 
 const eloRank = require('elo-rank')
