@@ -1,7 +1,41 @@
 import styled from '@emotion/styled'
-
+import { keyframes } from '@emotion/core'
 import backGroundWave from '../../img/backGroundWave.svg'
-import backGroundSea from '../../img/sea.svg'
+import backGroundSea from '../../img/backGroundSeaAnim.svg'
+
+const rotateBombAnimation = keyframes`
+  0%{
+    transform: rotate(0);
+  }
+  50%{
+    transform: rotate(5deg);
+  }
+  100%{
+    transform: rotate(0);
+  }
+`
+const rotateFerryAnimation = keyframes`
+  0%{
+    transform: rotate(14deg);
+  }
+  50%{
+    transform: rotate(19deg);
+  }
+  100%{
+    transform: rotate(14deg);
+  }
+`
+const waveAnimation = keyframes`
+  0%{
+    transform: scale(1);
+  }
+  50%{
+    transform: scale(1.02)  translateX(-10px);
+  }
+  100%{
+    transform: scale(1);
+  }
+`
 
 export const StartWrapper = styled.section`
   display: flex;
@@ -12,6 +46,7 @@ export const StartWrapper = styled.section`
   background-repeat:no-repeat;
   background-position: bottom left;
   font-family: 'Montserrat', sans-serif;
+
 `
 export const Auth = styled.section`
   position: fixed;
@@ -49,6 +84,7 @@ export const Wave = styled.img`
   top: auto;
   bottom: 0;
   left: 0;
+  animation: 10s ${waveAnimation} ease infinite;
 `
 
 export const GameMenu = styled.section`
@@ -63,8 +99,8 @@ export const GameMenu = styled.section`
   right: 10rem;
   background-color: #00c3ff;
   background-image: url('${backGroundSea}');
-  background-position: bottom;
-  background-repeat: no-repeat;
+  background-position: bottom ;
+  background-repeat: repeat-x;
   border-top-left-radius: 3rem;
   border-top-right-radius: 3rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -74,6 +110,11 @@ export const GameMenu = styled.section`
   font-weight: 500;
   text-transform: uppercase;
   font-size: 20pt;
+  animation: backWaveAnim 20s linear infinite;
+  @keyframes backWaveAnim {
+  from { background-position: -100% 100%, 0 0;}
+  to { background-position: 0 100%; }
+}
 `
 
 export const Text = styled.h1`
@@ -107,6 +148,7 @@ export const Bomb = styled.img`
   left: auto;
   right: 3rem;
   z-index: 1;
+  animation: 1.5s ${rotateBombAnimation} ease infinite;
 `
 export const Ferry = styled.img`
   position: absolute;
@@ -114,6 +156,6 @@ export const Ferry = styled.img`
   bottom: 45%;
   left: auto;
   right: 40rem;
-  transform: rotate(14deg);
+  animation: 2s ${rotateFerryAnimation} ease infinite;
   z-index: 1;
 `
