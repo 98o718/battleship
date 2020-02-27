@@ -2,7 +2,7 @@ import React from 'react'
 import { GameWrapper } from './Game.styles'
 import { PlayField, Logo } from '../../components'
 
-export const Game = () => {
+const Game = () => {
   return (
     <GameWrapper>
       <Logo />
@@ -10,3 +10,5 @@ export const Game = () => {
     </GameWrapper>
   )
 }
+
+export default Game

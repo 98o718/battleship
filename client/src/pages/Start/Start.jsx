@@ -14,7 +14,6 @@ import {
   AuthImg,
   LinkContainer,
 } from './Start.styles'
-import { constants } from '../../constants'
 
 import authImg from '../../img/authImg.png'
 import wave from '../../img/wave.svg'
@@ -22,13 +21,14 @@ import macaroni from '../../img/macaroniLogo.png'
 import bomb from '../../img/bomb.png'
 import ferry from '../../img/ferry.png'
 
+
 export const Start = () => {
   const [auth, setAuth] = useState(false)
   const [, setLocation] = useLocation()
   const handleNewRoom = () => {
-    fetch(constants.GENERATE_ROOM_URL)
+    fetch(process.env.REACT_APP_GENERATE_ROOM_URL)
       .then(r => r.text())
-      .then(room => setLocation(`${constants.GAME_URL}/${room}`))
+      .then(room => setLocation(`${process.env.REACT_APP_GAME_URL}/${room}`))
   }
   // const updateData = value => {
   //   setAuth(value)
@@ -68,3 +68,5 @@ export const Start = () => {
     </StartWrapper>
   )
 }
+
+export default Start

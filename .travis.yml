@@ -1,3 +1,27 @@
+sudo: true
+language: node_js
+node_js:
+  - node
+git:
+  quiet: true
+cache:
+  - yarn
+  - npm
+branches:
+  only:
+    - master
+addons:
+  ssh_known_hosts: '${DEPLOY_HOST}'
 before_install:
-- openssl aes-256-cbc -K $encrypted_4ba59b3cb419_key -iv $encrypted_4ba59b3cb419_iv
-  -in travis_rsa.enc -out travis_rsa -d
+  - openssl aes-256-cbc -K $encrypted_4ba59b3cb419_key -iv $encrypted_4ba59b3cb419_iv
+    -in deploy_key.enc -out /tmp/deploy_key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_rsa
+  - ssh-add /tmp/deploy_rsa
+  - echo -e "Host ${DEPLOY_HOST}\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+script: echo "skipping test..."
+after_success:
+  - bash ./deploy.sh
+env:
+  global:
+    secure: p90MUT1I/oyaxeNaI1DqLW0GXwQ0Y1G79hmky9D2onsHZ9CGFO9LHHjMq/aIinjzbbayl9v66V929bKYeGWecyvso8b585N/qrkpqrC/ieEnQqKwkUkxRVnuW+/maA9KJJflD8j7Ch6+9+uHy05oatgzie9mVDFdp7cLv1Mn6dg69z79UD/7WGzezSg9Yu0AFooJKCHc+QeQbommm1GYEDI0XIfak/RhSLGrkk7gzr9EgP4p7X+CS5HtA+TZB6kEZsyFJY3E9CZ1PZNpghqyt2Rirce7SxF+baMn+PCOWG4ceveX9HqeP4Oyyu5IQvg9x+Fy+IZMPUUDnXubRvLu7+Qfn5RktV7L1qlkh1j2WbV9KqJzr7qRKpyZLAa4Db/UApD0rSdWi4kx1ry47YniZ5iWQUT2uq6DhaB2x5zMyUwpYujbbSS+F53zj3LfBxcS1fhSgeuy3Y0LkuTN287Y8qBa/qe7lmuCGCZJq/qLmH/h8Wapek6ej7vbBj4rEwpYDPyvFbAMe8D/yFDp9GIrqOA5ufBCVlgjAsW63BVNFJ96VYzOn/93g53nbz6JXchWTR7CSjbSU7CfzlAN7VIEwTt3R6Z62PRN5TIS0Jkht6RwgHdNty4Cm/eDwij6PeSb8becmwJmw/ch7AUDZfiR7w/2lKqbtKBaFWOhJCLLw14=
