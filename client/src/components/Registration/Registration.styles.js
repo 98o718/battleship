@@ -43,7 +43,7 @@ export const Logo = styled.h1`
   text-transform: uppercase;
   opacity: 0.5;
 `
-export const Change = styled.h2`
+export const Change = styled.a`
   font-size: 1.3rem;
   font-weight: 400;
   text-transform: uppercase;
@@ -53,6 +53,12 @@ export const Change = styled.h2`
   margin-right: auto;
   cursor: pointer;
   transition: 0.3s;
+  text-decoration: none;
+  color: black;
+  &:focus {
+    outline: none;
+    opacity: 1;
+  }
   &:hover {
     opacity: 1;
   }
@@ -64,6 +70,7 @@ export const Line = styled.div`
   height: 1px;
   background-color: black;
   opacity: 0.5;
+  margin-bottom: 20px;
 `
 export const Input = styled.input`
   position: relative;

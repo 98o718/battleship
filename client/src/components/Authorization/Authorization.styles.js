@@ -43,11 +43,26 @@ export const Logo = styled.h1`
   text-transform: uppercase;
   opacity: 0.5;
 `
-export const Change = styled.h2`
+export const Change = styled.a`
+  position: relative;
   font-size: 1.3rem;
   font-weight: 400;
   text-transform: uppercase;
   opacity: 0.5;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+  color: black;
+  &:focus {
+    outline: none;
+    opacity: 1;
+  }
+  &:hover {
+    opacity: 1;
+  }
 `
 export const Line = styled.div`
   position: relative;
@@ -56,9 +71,10 @@ export const Line = styled.div`
   height: 1px;
   background-color: black;
   opacity: 0.5;
+  margin-bottom: 20px;
 `
 export const Input = styled.input`
-  position: relative;
+  /* position: relative; */
   text-align: center;
   border: none;
   border-bottom: 1px solid black;
@@ -80,5 +96,8 @@ export const Input = styled.input`
   }
   &:focus::placeholder {
     opacity: 0;
+  }
+  &:hover {
+    opacity: 1;
   }
 `
