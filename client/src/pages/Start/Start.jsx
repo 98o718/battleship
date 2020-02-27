@@ -1,5 +1,5 @@
-import React from 'react'
-import { Logo, Button } from '../../components'
+import React, { useState } from 'react'
+import { Logo, Button, Authorization } from '../../components'
 import { Link, useLocation } from 'wouter'
 import {
   StartWrapper,
@@ -14,7 +14,6 @@ import {
   AuthImg,
   LinkContainer,
 } from './Start.styles'
-
 import { constants } from '../../constants'
 
 import authImg from '../../img/authImg.png'
@@ -24,23 +23,34 @@ import bomb from '../../img/bomb.png'
 import ferry from '../../img/ferry.png'
 
 export const Start = () => {
+  const [auth, setAuth] = useState(false)
   const [, setLocation] = useLocation()
-
   const handleNewRoom = () => {
     fetch(constants.GENERATE_ROOM_URL)
       .then(r => r.text())
       .then(room => setLocation(`${constants.GAME_URL}/${room}`))
   }
-
+  // const updateData = value => {
+  //   setAuth(value)
+  // }
   return (
     <StartWrapper>
       <Logo></Logo>
       <Auth>
         <AuthImg src={authImg} />
         <LinkContainer>
-          <Link to="/auth">Войти</Link> | <Link to="/auth">Регистрация</Link>
+          <Link
+            to="/"
+            onClick={() => {
+              setAuth(true)
+            }}
+          >
+            Войти
+          </Link>{' '}
+          | <Link to="/auth">Регистрация</Link>
         </LinkContainer>
       </Auth>
+      <Authorization active={auth} setActive={setAuth} />
       <GameMenu>
         <Text>Выбор режима</Text>
         <Button

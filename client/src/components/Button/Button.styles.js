@@ -26,6 +26,17 @@ const ready = css`
   font-size: 12pt;
 `
 
+const form = css`
+  background-color: #00c3ff;
+  border: none;
+  color: white;
+  margin: 20px 20%;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  transition: 0.14s;
+  font-size: 12pt;
+`
+
 const common = css`
   background-color: white;
   border: none;
@@ -66,6 +77,8 @@ export const ButtonWrapper = styled.button(props => {
       return ready
     case 'common':
       return common
+    case 'form':
+      return form
     default:
       return defaultState
   }
