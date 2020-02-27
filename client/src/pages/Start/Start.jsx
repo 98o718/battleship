@@ -65,7 +65,12 @@ export const Start = () => {
         setAuth={setAuth}
         auth={auth}
       />
-      <Authorization active={auth} setActive={setAuth} />
+      <Authorization
+        active={auth}
+        setActive={setAuth}
+        setReg={setReg}
+        reg={reg}
+      />
       <GameMenu>
         <Text>Выбор режима</Text>
         <Button

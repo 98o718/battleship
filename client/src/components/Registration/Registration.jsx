@@ -18,16 +18,18 @@ const Registration = props => (
   >
     <Form active={props.active} onClick={e => e.stopPropagation()}>
       <Img src={reg} alt="authImg" />
-      <Logo>Регистрация</Logo>
-      <Line />
-      <Change
-        onClick={() => {
-          props.setAuth(true)
-          props.setActive(false)
-        }}
-      >
-        Авторизация
-      </Change>
+      <p>
+        <Logo>Регистрация</Logo>
+        <Line />
+        <Change
+          onClick={() => {
+            props.setAuth(true)
+            props.setActive(false)
+          }}
+        >
+          Авторизация
+        </Change>
+      </p>
       <Input type="text" placeholder="Email" />
       <Input type="password" placeholder="Пароль" />
       <Input type="password" placeholder="Повторить пароль" />
