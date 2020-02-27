@@ -6,4 +6,5 @@ const Button = props => (
     {props.text}
   </ButtonWrapper>
 )
+
 export default Button

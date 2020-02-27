@@ -21,7 +21,7 @@ import macaroni from '../../img/macaroniLogo.png'
 import bomb from '../../img/bomb.png'
 import ferry from '../../img/ferry.png'
 
-export const Start = () => {
+const Start = () => {
   const [, setLocation] = useLocation()
 
   const handleNewRoom = () => {
@@ -56,3 +56,5 @@ export const Start = () => {
     </StartWrapper>
   )
 }
+
+export default Start

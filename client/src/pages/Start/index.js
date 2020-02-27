@@ -1,3 +1,3 @@
-import { Start } from './Start'
+import Start from './Start'
 
-export { Start }
+export default Start
