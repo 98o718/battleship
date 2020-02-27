@@ -26,6 +26,7 @@ const Registration = props => (
             props.setAuth(true)
             props.setActive(false)
           }}
+          href="#"
         >
           Авторизация
         </Change>
