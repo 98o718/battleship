@@ -3,6 +3,8 @@ import { EndGameWrapper, Container, Image, Text } from './EndGame.styles'
 import CountUp from 'react-countup'
 import { Link } from 'wouter'
 
+import scroll from '../../img/scroll.png'
+
 const EndGame = props => {
   const [rating, setRating] = useState(undefined)
   const [state, setState] = useState(undefined)
@@ -10,7 +12,7 @@ const EndGame = props => {
     if (props.active) setRating(800)
     if (props.state) setState('Победа!')
     else setState('Поражение')
-  })
+  }, [props.active, props.state])
   return (
     <EndGameWrapper active={props.active} state={props.state}>
       <Container active={props.active}>
@@ -18,7 +20,7 @@ const EndGame = props => {
         <Text>
           <h1>{state}</h1>
           <p>
-            📜 &#160;
+            <img src={scroll} alt="scroll rating" /> &#160;
             <CountUp start={rating} end={rating + 25} delay={2}></CountUp>
           </p>
           <Link to="/">Вернуться на главную</Link>
