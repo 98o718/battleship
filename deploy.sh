@@ -1,8 +1,6 @@
 #!/bin/bash
 set -xe
 
-eval "$(ssh-agent -s)"
-ssh-add
 cd client
 yarn
 CI=false yarn build
