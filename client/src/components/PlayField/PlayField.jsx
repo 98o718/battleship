@@ -12,8 +12,8 @@ import {
   CenterField,
 } from './PlayField.styles'
 
-import Button from '../Button'
-import EndGame from '../EndGame/EndGame'
+import { Button, EndGame } from '../.'
+
 const PlayField = () => {
   const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()

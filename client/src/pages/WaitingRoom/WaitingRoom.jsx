@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 import { useLocation } from 'wouter'
 import { WaitingRoomWrapper } from './WaitingRoom.styles'
 
-export const WaitingRoom = () => {
+const WaitingRoom = () => {
   const [, setLocation] = useLocation()
 
   useEffect(() => {
@@ -20,3 +20,5 @@ export const WaitingRoom = () => {
 
   return <WaitingRoomWrapper>Ожидаем соперника ⏳</WaitingRoomWrapper>
 }
+
+export default WaitingRoom

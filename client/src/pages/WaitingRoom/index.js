@@ -1,3 +1,3 @@
-import { WaitingRoom } from './WaitingRoom'
+import WaitingRoom from './WaitingRoom'
 
-export { WaitingRoom }
+export default WaitingRoom
