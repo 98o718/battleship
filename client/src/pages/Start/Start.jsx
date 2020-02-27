@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Logo, Button, Authorization } from '../../components'
+import { Logo, Button, Authorization, Registration } from '../../components'
 import { Link, useLocation } from 'wouter'
 import {
   StartWrapper,
@@ -21,9 +21,10 @@ import macaroni from '../../img/macaroniLogo.png'
 import bomb from '../../img/bomb.png'
 import ferry from '../../img/ferry.png'
 
-
 export const Start = () => {
   const [auth, setAuth] = useState(false)
+  const [reg, setReg] = useState(false)
+
   const [, setLocation] = useLocation()
   const handleNewRoom = () => {
     fetch(process.env.REACT_APP_GENERATE_ROOM_URL)
@@ -47,9 +48,23 @@ export const Start = () => {
           >
             Войти
           </Link>{' '}
-          | <Link to="/auth">Регистрация</Link>
+          |{' '}
+          <Link
+            to="/"
+            onClick={() => {
+              setReg(true)
+            }}
+          >
+            Регистрация
+          </Link>
         </LinkContainer>
       </Auth>
+      <Registration
+        active={reg}
+        setActive={setReg}
+        setAuth={setAuth}
+        auth={auth}
+      />
       <Authorization active={auth} setActive={setAuth} />
       <GameMenu>
         <Text>Выбор режима</Text>
