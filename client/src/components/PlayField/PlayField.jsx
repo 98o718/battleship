@@ -2,29 +2,47 @@ import React, { useState, useEffect } from 'react'
 import io from 'socket.io-client'
 import { useRoute, useLocation } from 'wouter'
 import { toast } from 'react-toastify'
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
 
 import {
   PlayFieldWrapper,
-  Line,
-  Point,
-  Field,
   FieldsWrapper,
   CenterField,
 } from './PlayField.styles'
 
-import { Button, EndGame } from '../.'
+import { shipSizes, shipTypes } from '../../constants'
+
+import { Button, EndGame, Field, ShipPicker } from '..'
 
 const PlayField = () => {
   const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()
+
   const [player, setPlayer] = useState(undefined)
   const [turn, setTurn] = useState(undefined)
   const [myField, setMyField] = useState(undefined)
   const [opponentField, setOpponentField] = useState(undefined)
   const [sio, setSio] = useState(undefined)
-  const [ships, setShips] = useState(undefined)
+  const [ships, setShips] = useState([])
   const [endGame, setEndGame] = useState(false)
   const [winner, setWinner] = useState(undefined)
+  const [arrange, setArrange] = useState(false)
+
+  const template = [
+    shipTypes.FERRY,
+    shipTypes.SHIP,
+    shipTypes.SHIP,
+    shipTypes.SPEEDBOAT,
+    shipTypes.SPEEDBOAT,
+    shipTypes.SPEEDBOAT,
+    shipTypes.SAILBOAT,
+    shipTypes.SAILBOAT,
+    shipTypes.SAILBOAT,
+    shipTypes.SAILBOAT,
+  ]
+
+  const [shipsTemplate, setShipsTemplate] = useState(template)
 
   const placeShips = ships => {
     const matrix = [...Array(10)].map(() => Array(10).fill(0))
@@ -95,7 +113,7 @@ const PlayField = () => {
       toast.error('Противник сдался!')
       setLocation('/')
     })
-    // eslint - disable - next - line
+    // eslint-disable-next-line
   }, [setLocation])
 
   useEffect(() => {
@@ -157,7 +175,6 @@ const PlayField = () => {
           setEndGame(true)
           setWinner(false)
         }
-        // setLocation('/')
       })
     }
   }, [player, turn, sio, ships])
@@ -174,6 +191,11 @@ const PlayField = () => {
     sio.emit('ready', {
       ships,
     })
+  }
+
+  const handleReset = () => {
+    setShipsTemplate(template)
+    setShips([])
   }
 
   const handleRandom = () => {
@@ -252,58 +274,188 @@ const PlayField = () => {
     setShips(ships)
   }
 
+  const canPlace = (x, y, item) => {
+    if (!item.isRotated) {
+      if (
+        !(
+          (!myField[y - 1] ||
+            ((myField[y - 1][x - 1] === 0 || !myField[y - 1][x - 1]) &&
+              myField[y - 1][x] === 0 &&
+              (myField[y - 1][x + 1] === 0 || !myField[y - 1][x + 1]))) &&
+          (myField[y][x - 1] === 0 || !myField[y][x - 1]) &&
+          (myField[y][x + 1] === 0 || !myField[y][x + 1]) &&
+          myField[y][x] === 0
+        )
+      ) {
+        return false
+      }
+
+      for (let i = 1; i <= shipSizes[item.type]; i++) {
+        if (
+          i === shipSizes[item.type] &&
+          !(
+            !myField[y + i] ||
+            (myField[y + i][x] === 0 &&
+              (myField[y + i][x - 1] === 0 || !myField[y + i][x - 1]) &&
+              (myField[y + i][x + 1] === 0 || !myField[y + i][x + 1]))
+          )
+        ) {
+          return false
+        } else if (
+          i !== shipSizes[item.type] &&
+          !(
+            myField[y + i] &&
+            myField[y + i][x] === 0 &&
+            (myField[y + i][x - 1] === 0 || !myField[y + i][x - 1]) &&
+            (myField[y + i][x + 1] === 0 || !myField[y + i][x + 1])
+          )
+        ) {
+          return false
+        }
+      }
+      return true
+    } else {
+      if (
+        !(
+          myField[y][x] === 0 &&
+          (myField[y][x - 1] === 0 || !myField[y][x - 1]) &&
+          (!myField[y - 1] ||
+            ((myField[y - 1][x - 1] === 0 || !myField[y - 1][x - 1]) &&
+              (myField[y - 1][x] === 0 || !myField[y - 1][x]))) &&
+          (!myField[y + 1] ||
+            ((myField[y + 1][x - 1] === 0 || !myField[y + 1][x - 1]) &&
+              (myField[y + 1][x] === 0 || myField[y + 1][x] === 0))) &&
+          (myField[y][x + shipSizes[item.type]] === 0 ||
+            !myField[y][x + shipSizes[item.type]]) &&
+          (!myField[y - 1] ||
+            myField[y - 1][x + shipSizes[item.type]] === 0 ||
+            !myField[y - 1][x + shipSizes[item.type]]) &&
+          (!myField[y + 1] ||
+            myField[y + 1][x + shipSizes[item.type]] === 0 ||
+            !myField[y + 1][x + shipSizes[item.type]])
+        )
+      ) {
+        return false
+      }
+
+      for (let i = 1; i < shipSizes[item.type]; i++) {
+        if (
+          !(
+            myField[y][x + i] === 0 &&
+            (!myField[y - 1] || myField[y - 1][x + i] === 0) &&
+            (!myField[y + 1] || myField[y + 1][x + i] === 0)
+          )
+        ) {
+          return false
+        }
+      }
+
+      return true
+    }
+  }
+
+  const dropShip = (x, y, item) => {
+    let ship = []
+
+    if (!item.isRotated) {
+      for (let i = 0; i < shipSizes[item.type]; i++) {
+        ship.push({
+          x,
+          y: y + i,
+          v: shipSizes[item.type],
+        })
+      }
+    } else {
+      for (let i = 0; i < shipSizes[item.type]; i++) {
+        ship.push({
+          x: x + i,
+          y,
+          v: shipSizes[item.type],
+        })
+      }
+    }
+
+    setShips(prev => {
+      let b = prev.slice()
+
+      b.push(ship)
+
+      return b
+    })
+
+    setShipsTemplate(prev => {
+      let idx = prev.indexOf(item.type)
+      let b = prev.slice()
+      b.splice(idx, 1)
+
+      return b
+    })
+  }
+
   return (
-    <PlayFieldWrapper>
-      <FieldsWrapper>
-        <Field>
-          {myField &&
-            myField.map((line, y) => {
-              return (
-                <Line key={y}>
-                  {line.map((point, x) => (
-                    <Point status={point} key={x} />
-                  ))}
-                </Line>
-              )
-            })}
-        </Field>
-        <CenterField>
-          {turn >= 0 ? (
-            <p>
-              Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
-            </p>
-          ) : (
-            <>
-              <Button
-                onClick={handleRandom}
-                state="common"
-                style={{ marginBottom: 15 }}
-                text="Случайно"
-              />
-              <Button onClick={handleReady} state="ready" text="Готов" />
-            </>
+    <DndProvider backend={Backend}>
+      <PlayFieldWrapper>
+        <FieldsWrapper>
+          {arrange && (
+            <ShipPicker
+              ships={ships && ships.length === 10 ? [] : shipsTemplate}
+            />
           )}
-        </CenterField>
-        <Field style={{ opacity: turn === player ? 1 : 0.2 }}>
-          {opponentField &&
-            opponentField.map((line, y) => {
-              return (
-                <Line key={y}>
-                  {line.map((point, x) => (
-                    <Point
-                      status={point}
-                      key={x}
-                      opponent
-                      onClick={() => handleShot(x, y)}
-                    />
-                  ))}
-                </Line>
-              )
-            })}
-        </Field>
-      </FieldsWrapper>
-      <EndGame active={endGame} state={winner} />
-    </PlayFieldWrapper>
+          <Field matrix={myField} dropShip={dropShip} canPlace={canPlace} />
+          <CenterField>
+            {turn >= 0 ? (
+              <p>
+                Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
+              </p>
+            ) : (
+              <>
+                {arrange && (
+                  <Button
+                    onClick={handleReset}
+                    state="common"
+                    style={{ marginBottom: 15 }}
+                    text="Сброс"
+                  />
+                )}
+                {arrange && (
+                  <Button
+                    onClick={handleRandom}
+                    state="common"
+                    style={{ marginBottom: 15 }}
+                    text="Случайно"
+                  />
+                )}
+                {!arrange && (
+                  <Button
+                    onClick={() => setArrange(!arrange)}
+                    state="common"
+                    style={{ marginBottom: 15 }}
+                    text="Расставить"
+                  />
+                )}
+                <Button
+                  onClick={arrange ? () => setArrange(!arrange) : handleReady}
+                  state="ready"
+                  disabled={ships.length < 10}
+                  text={arrange ? 'Ок' : 'Готов'}
+                />
+              </>
+            )}
+          </CenterField>
+          {!arrange && (
+            <Field
+              matrix={opponentField}
+              opponent={true}
+              handleShot={handleShot}
+              dropShip={dropShip}
+              canPlace={canPlace}
+              style={{ opacity: turn === player ? 1 : 0.2 }}
+            />
+          )}
+        </FieldsWrapper>
+        <EndGame active={endGame} state={winner} />
+      </PlayFieldWrapper>
+    </DndProvider>
   )
 }
 
