@@ -445,6 +445,11 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
+elo-rank@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/elo-rank/-/elo-rank-1.0.4.tgz#dd6b62f730a7d26210750c34d5b9057d20885df6"
+  integrity sha512-K1nDpqC2AzWx7EykoOnTwbci50xZPYBsfyR2Tk4h/tVnqvr6n1+8gOlWzK3pxetN5Cmx7XbPT9D0Zam2ikM6Bw==
+
 email-validator@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-2.0.4.tgz#b8dfaa5d0dae28f1b03c95881d904d4e40bfe7ed"

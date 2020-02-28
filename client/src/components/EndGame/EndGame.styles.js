@@ -64,6 +64,9 @@ export const Text = styled.div`
   p {
     font-size: 3rem;
     margin-bottom: 30px;
+    img {
+      width: 2.4rem;
+    }
   }
   a {
     color: #424242;

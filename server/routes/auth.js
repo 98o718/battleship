@@ -263,7 +263,7 @@ router.get('/forgot/:token', async (req, res) => {
           '\n\nС уважением, команда Battleship.'
 
         await mailer.sendMail({
-          from: 'battleship@macaroni.studio',
+          from: config.smtp.username,
           to: user.email,
           subject: 'Пароль сброшен',
           text,

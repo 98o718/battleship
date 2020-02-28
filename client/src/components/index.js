@@ -3,9 +3,11 @@ import Ship from './Ship'
 import ShipPicker from './ShipPicker'
 import Field from './Field'
 import Cell from './Cell'
+import Registration from './Registration'
 import PlayField from './PlayField'
 import Logo from './Logo'
 import Button from './Button'
+import Authorization from './Authorization'
 import EndGame from './EndGame'
 
 export {
@@ -14,6 +16,8 @@ export {
   ShipPicker,
   Field,
   Cell,
+  Registration,
+  Authorization,
   PlayField,
   Logo,
   Button,
