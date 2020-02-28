@@ -19,7 +19,7 @@ const Authorization = props => {
       <Form active={props.active} onClick={e => e.stopPropagation()}>
         <Img src={authImg} alt="authImg" />
         <p>
-          <Logo>Авториазция</Logo>
+          <Logo>Авторизация</Logo>
           <Line />
           <Change
             onClick={() => {
