@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
 import backGroundWave from '../../img/backGroundWave.svg'
-import backGroundSea from '../../img/backGroundSeaAnim.svg'
+import backGroundSea from '../../img/sea.svg'
 
 const rotateBombAnimation = keyframes`
   0%{
@@ -88,6 +88,7 @@ export const Wave = styled.img`
 `
 
 export const GameMenu = styled.section`
+  will-change: background-position;
   position: fixed;
   width: 33rem;
   min-width: fit-content;
@@ -110,10 +111,10 @@ export const GameMenu = styled.section`
   font-weight: 500;
   text-transform: uppercase;
   font-size: 20pt;
-  animation: backWaveAnim 20s linear infinite;
+  animation: backWaveAnim 10s linear infinite;
   @keyframes backWaveAnim {
-  from { background-position: -100% 100%, 0 0;}
-  to { background-position: 0 100%; }
+  from { background-position: calc(-33rem - 10px) 102%, 0 0;}
+  to { background-position: 0 102%; }
 }
 `
 

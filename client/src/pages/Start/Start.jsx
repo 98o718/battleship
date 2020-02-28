@@ -31,9 +31,6 @@ export const Start = () => {
       .then(r => r.text())
       .then(room => setLocation(`${process.env.REACT_APP_GAME_URL}/${room}`))
   }
-  // const updateData = value => {
-  //   setAuth(value)
-  // }
   return (
     <StartWrapper>
       <Logo></Logo>
