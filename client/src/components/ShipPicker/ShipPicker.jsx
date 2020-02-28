@@ -7,7 +7,9 @@ const ShipPicker = ({ ships }) => {
   const [isRotated, setRotated] = useState(false)
   return (
     <ShipPickerWrapper>
-      <RotateButton onClick={() => setRotated(!isRotated)}>🔄</RotateButton>
+      {ships && ships.length !== 0 && (
+        <RotateButton onClick={() => setRotated(!isRotated)}>🔄</RotateButton>
+      )}
       <div>
         {ships &&
           ships.map((ship, idx) => (
