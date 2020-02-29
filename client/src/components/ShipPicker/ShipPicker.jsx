@@ -8,7 +8,11 @@ const ShipPicker = ({ ships }) => {
   return (
     <ShipPickerWrapper>
       {ships && ships.length !== 0 && (
-        <RotateButton onClick={() => setRotated(!isRotated)}>🔄</RotateButton>
+        <RotateButton onClick={() => setRotated(!isRotated)}>
+          <span role="img" aria-label="img">
+            🔄
+          </span>
+        </RotateButton>
       )}
       <div>
         {ships &&

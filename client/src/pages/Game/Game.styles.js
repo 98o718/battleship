@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 
-import backGroundWave from '../../img/backGroundWave.svg'
+import backGroundWave from '../../assets/backGroundWave.svg'
 
 export const GameWrapper = styled.div`
   display: flex;

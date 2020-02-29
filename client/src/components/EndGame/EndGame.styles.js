@@ -3,8 +3,8 @@ import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
 import { tada } from 'react-animations'
 
-import bomb from '../../img/bomb.png'
-import party from '../../img/party.png'
+import bomb from '../../assets/bomb.png'
+import party from '../../assets/party.png'
 
 const tadaAnimation = keyframes`${tada}`
 

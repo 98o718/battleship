@@ -1,7 +1,7 @@
 import React from 'react'
 import { LogoWrapper, LogoImage } from './Logo.styles'
 
-import logo from '../../img/logo.svg'
+import logo from '../../assets/logo.svg'
 
 const Logo = props => (
   <LogoWrapper>

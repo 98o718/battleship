@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
-import backGroundWave from '../../img/backGroundWave.svg'
-import backGroundSea from '../../img/sea.svg'
+import backGroundWave from '../../assets/backGroundWave.svg'
+import backGroundSea from '../../assets/sea.svg'
 
 const rotateBombAnimation = keyframes`
   0%{

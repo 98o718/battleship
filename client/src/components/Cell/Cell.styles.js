@@ -1,12 +1,12 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/core'
 
-import bomb from '../../img/bomb.png'
-import ferry from '../../img/ferry.png'
-import shot from '../../img/shot.svg'
-import sailboat from '../../img/sailboat.png'
-import speedboat from '../../img/speedboat.png'
-import ship from '../../img/ship.png'
+import bomb from '../../assets/bomb.png'
+import ferry from '../../assets/ferry.png'
+import shot from '../../assets/shot.svg'
+import sailboat from '../../assets/sailboat.png'
+import speedboat from '../../assets/speedboat.png'
+import ship from '../../assets/ship.png'
 
 export const CellWrapper = styled.div`
   background-color: white;

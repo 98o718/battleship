@@ -1,12 +1,4 @@
 import styled from '@emotion/styled'
-import { css } from '@emotion/core'
-
-import bomb from '../../img/bomb.png'
-import ferry from '../../img/ferry.png'
-import shot from '../../img/shot.svg'
-import sailboat from '../../img/sailboat.png'
-import speedboat from '../../img/speedboat.png'
-import ship from '../../img/ship.png'
 
 export const PlayFieldWrapper = styled.div`
   display: flex;

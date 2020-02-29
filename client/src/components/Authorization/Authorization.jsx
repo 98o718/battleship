@@ -9,7 +9,7 @@ import {
   Input,
 } from './Authorization.styles'
 import Button from '../Button'
-import authImg from '../../img/authImg.png'
+import authImg from '../../assets/authImg.png'
 const Authorization = props => {
   return (
     <AuthorizationWrapper

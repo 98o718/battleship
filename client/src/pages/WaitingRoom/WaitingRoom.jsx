@@ -16,9 +16,16 @@ const WaitingRoom = () => {
 
       setLocation(`/game/${room}`)
     })
-  }, [])
+  }, [setLocation])
 
-  return <WaitingRoomWrapper>Ожидаем соперника ⏳</WaitingRoomWrapper>
+  return (
+    <WaitingRoomWrapper>
+      Ожидаем соперника{' '}
+      <span role="img" aria-label="img">
+        ⏳
+      </span>
+    </WaitingRoomWrapper>
+  )
 }
 
 export default WaitingRoom
