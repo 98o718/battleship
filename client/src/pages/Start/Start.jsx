@@ -15,11 +15,11 @@ import {
   LinkContainer,
 } from './Start.styles'
 
-import authImg from '../../img/authImg.png'
-import wave from '../../img/wave.svg'
-import macaroni from '../../img/macaroniLogo.png'
-import bomb from '../../img/bomb.png'
-import ferry from '../../img/ferry.png'
+import authImg from '../../assets/authImg.png'
+import wave from '../../assets/wave.svg'
+import macaroni from '../../assets/macaroniLogo.png'
+import bomb from '../../assets/bomb.png'
+import ferry from '../../assets/ferry.png'
 
 export const Start = () => {
   const [auth, setAuth] = useState(false)

@@ -3,7 +3,7 @@ import { EndGameWrapper, Container, Image, Text } from './EndGame.styles'
 import CountUp from 'react-countup'
 import { Link } from 'wouter'
 
-import scroll from '../../img/scroll.png'
+import scroll from '../../assets/scroll.png'
 
 const EndGame = props => {
   const [rating, setRating] = useState(undefined)

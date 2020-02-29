@@ -9,7 +9,7 @@ import {
   Input,
 } from './Registration.styles'
 import Button from '../Button'
-import reg from '../../img/reg.png'
+import reg from '../../assets/reg.png'
 const Registration = props => (
   <RegistrationWrapper
     active={props.active}

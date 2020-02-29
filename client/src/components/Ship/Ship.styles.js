@@ -3,10 +3,10 @@ import { css } from '@emotion/core'
 
 import { shipTypes } from '../../constants'
 
-import ferry from '../../img/ferry.png'
-import sailboat from '../../img/sailboat.png'
-import speedboat from '../../img/speedboat.png'
-import ship from '../../img/ship.png'
+import ferry from '../../assets/ferry.png'
+import sailboat from '../../assets/sailboat.png'
+import speedboat from '../../assets/speedboat.png'
+import ship from '../../assets/ship.png'
 
 export const ShipWrapper = styled.div`
   /* background-color: white; */
