@@ -7,4 +7,5 @@ export const LogoWrapper = styled.div`
 `
 export const LogoImage = styled.img`
   width: 30rem;
+  cursor: ${props => (props.game ? 'pointer' : 'default')};
 `
