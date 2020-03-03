@@ -129,7 +129,6 @@ const Registration = props => {
           value={credentials.password}
           onChange={handleChange}
         />
-        {/* <Input type="password" placeholder="Повторить пароль" /> */}
         <Button
           type="submit"
           state="form"
