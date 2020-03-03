@@ -6,6 +6,8 @@
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
     "@reatom/core": "^1.1.0",
+    "@reatom/debug": "^1.1.1",
+    "@reatom/react": "^1.0.0",
     "emotion-normalize": "^10.1.0",
     "react": "^16.12.0",
     "react-animations": "^1.0.0",
