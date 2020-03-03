@@ -160,3 +160,21 @@ export const Ferry = styled.img`
   animation: 2s ${rotateFerryAnimation} ease infinite;
   z-index: 1;
 `
+export const LogoutButton = styled.button`
+  border: none;
+  background-color: transparent;
+  color: rgba(244, 67, 54, 1);
+  cursor: pointer;
+  height: fit-content;
+  text-transform: uppercase;
+  transition: 0.2s;
+  outline: none;
+
+  &:hover {
+    color: black;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`
