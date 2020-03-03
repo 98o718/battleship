@@ -4,17 +4,13 @@ import { Global, css } from '@emotion/core'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import emotionNormalize from 'emotion-normalize'
-import { createStore } from '@reatom/core'
-import { context } from '@reatom/react'
+import { useAtom } from '@reatom/react'
 import { connectReduxDevtools } from '@reatom/debug'
 
 import { Game, Start, WaitingRoom } from './pages'
+import { authAtom, usernameAtom } from './model'
 
-export const App = () => {
-  const store = createStore(
-    JSON.parse(`${localStorage.getItem('app_store')}`) || {}
-  )
-
+export const App = ({ store }) => {
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       connectReduxDevtools(store)
@@ -28,8 +24,11 @@ export const App = () => {
     )
   })
 
+  useAtom(authAtom, () => null, [])
+  useAtom(usernameAtom, () => null, [])
+
   return (
-    <context.Provider value={store}>
+    <>
       <Global
         styles={css`
           ${emotionNormalize}
@@ -55,6 +54,6 @@ export const App = () => {
       <Route path="/waiting-room" component={WaitingRoom} />
       <Route path="/game/:room" component={Game} />
       <Route path="/" extends component={Start} />
-    </context.Provider>
+    </>
   )
 }
