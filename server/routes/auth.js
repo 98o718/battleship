@@ -14,7 +14,7 @@ const User = require('./../models/user')
 router.get('/check', (req, res) => {
   const authorization = req.headers['authorization']
   if (!authorization) {
-    return res.json({
+    return res.status(401).json({
       status: false,
     })
   }
@@ -24,7 +24,7 @@ router.get('/check', (req, res) => {
     const token = a[1]
     jwt.verify(token, config.jwt.secret, err => {
       if (err) {
-        return res.json({
+        return res.status(401).json({
           status: false,
         })
       } else {
@@ -34,7 +34,7 @@ router.get('/check', (req, res) => {
       }
     })
   } else {
-    return res.json({
+    return res.status(401).json({
       status: false,
     })
   }
@@ -44,7 +44,7 @@ router.post('/login', (req, res) => {
   let { email, password } = req.body
 
   if (!email || !password) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Заполните все поля',
     })
@@ -53,7 +53,7 @@ router.post('/login', (req, res) => {
   email = email.trim().toLowerCase()
 
   if (!validator.validate(email)) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Введите корректный email',
     })
@@ -61,7 +61,7 @@ router.post('/login', (req, res) => {
 
   User.findOne({ email }, (err, user) => {
     if (err || user === null) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         message: 'Неверный логин или пароль',
       })
@@ -82,7 +82,7 @@ router.post('/login', (req, res) => {
           token,
         })
       } else {
-        return res.json({
+        return res.status(400).json({
           status: false,
           message: 'Неверный логин или пароль',
         })
@@ -95,7 +95,7 @@ router.post('/sign-up', async (req, res) => {
   let { email, username, password } = req.body
 
   if (!email || !username || !password) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Заполните все поля',
     })
@@ -105,7 +105,7 @@ router.post('/sign-up', async (req, res) => {
   username = username.trim()
 
   if (!validator.validate(email)) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Введите корректный email',
     })
@@ -113,7 +113,7 @@ router.post('/sign-up', async (req, res) => {
 
   const count1 = await User.find({ email }).countDocuments()
   if (count1 > 0) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Email уже зарегистрирован',
     })
@@ -121,7 +121,7 @@ router.post('/sign-up', async (req, res) => {
 
   const count2 = await User.find({ username }).countDocuments()
   if (count2 > 0) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Логин уже зарегистрирован',
     })
@@ -138,7 +138,7 @@ router.post('/sign-up', async (req, res) => {
 
   user.save(err => {
     if (err) {
-      return res.json({
+      return res.status(500).json({
         status: false,
         message: 'Не удалось зарегистрироваться',
       })
@@ -154,7 +154,7 @@ router.post('/forgot', async (req, res) => {
   let { email } = req.body
 
   if (!email) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Заполните все поля',
     })
@@ -163,7 +163,7 @@ router.post('/forgot', async (req, res) => {
   email = email.trim().toLowerCase()
 
   if (!validator.validate(email)) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Введите корректный email',
     })
@@ -171,7 +171,7 @@ router.post('/forgot', async (req, res) => {
 
   User.findOne({ email }, async (err, user) => {
     if (err || user === null) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         message: 'Пользователь не найден',
       })
@@ -211,14 +211,14 @@ router.get('/forgot/:token', async (req, res) => {
 
   const json = jwt.decode(token)
   if (!json)
-    return res.json({
+    return res.status(400).json({
       status: false,
       message: 'Ссылка недействительная',
     })
 
   User.findById(json.id, (err, user) => {
     if (err || user === null) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         message: 'Ссылка недействительна',
       })
@@ -226,14 +226,14 @@ router.get('/forgot/:token', async (req, res) => {
 
     jwt.verify(token, user.password, async err => {
       if (err) {
-        return res.json({
+        return res.status(400).json({
           status: false,
           message: 'Ссылка уже использована или недействительна',
         })
       }
 
       if (Date.now() - json.createdAt > 86400) {
-        return res.json({
+        return res.status(400).json({
           status: false,
           message: 'Ссылка устарела',
         })
@@ -247,7 +247,7 @@ router.get('/forgot/:token', async (req, res) => {
       user.password = await bcrypt.hash(password, salt)
       user.save(async err => {
         if (err) {
-          return res.json({
+          return res.status(500).json({
             status: false,
             message: 'Не удалось изменить пароль',
           })
