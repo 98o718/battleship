@@ -15,7 +15,7 @@ import { shipSizes, shipTypes } from '../../constants'
 
 import { Button, EndGame, Field, ShipPicker } from '..'
 
-const PlayField = () => {
+const PlayField = props => {
   const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()
 
@@ -73,10 +73,8 @@ const PlayField = () => {
 
     setMyField(matrix)
   }
-
   useEffect(() => {
     const room = params.room
-
     fetch(process.env.REACT_APP_CHECK_ROOM_URL, {
       method: 'POST',
       headers: {
@@ -105,6 +103,7 @@ const PlayField = () => {
 
     socket.on('start', turn => {
       setTurn(turn)
+      props.setGame(false)
       toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
     })
 
@@ -436,7 +435,13 @@ const PlayField = () => {
                   />
                 )}
                 <Button
-                  onClick={arrange ? () => setArrange(!arrange) : handleReady}
+                  onClick={
+                    arrange
+                      ? () => {
+                          setArrange(!arrange)
+                        }
+                      : handleReady
+                  }
                   state="ready"
                   disabled={ships.length < 10}
                   text={arrange ? 'Ок' : 'Готов'}

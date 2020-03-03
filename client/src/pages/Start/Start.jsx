@@ -33,7 +33,7 @@ export const Start = () => {
   }
   return (
     <StartWrapper>
-      <Logo></Logo>
+      <Logo game={false}></Logo>
       <Auth>
         <AuthImg src={authImg} />
         <LinkContainer>
