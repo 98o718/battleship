@@ -144,8 +144,17 @@ router.post('/sign-up', async (req, res) => {
       })
     }
 
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    }
+
+    const token = jwt.sign(payload, config.jwt.secret)
+
     return res.json({
       status: true,
+      token,
     })
   })
 })
