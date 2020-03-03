@@ -79,6 +79,7 @@ router.post('/login', (req, res) => {
 
         res.json({
           status: true,
+          username: user.username,
           token,
         })
       } else {
