@@ -16,6 +16,10 @@ const WaitingRoom = () => {
 
       setLocation(`/game/${room}`)
     })
+
+    return () => {
+      socket.close()
+    }
   }, [setLocation])
 
   return (
