@@ -110,7 +110,7 @@ const PlayField = () => {
 
     socket.on('leave', () => {
       socket.close()
-      toast.error('Противник сдался!')
+      toast.error('Противник отключился!')
       setLocation('/')
     })
     // eslint-disable-next-line
