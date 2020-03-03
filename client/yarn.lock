@@ -1247,6 +1247,16 @@
   resolved "https://registry.yarnpkg.com/@reatom/core/-/core-1.1.0.tgz#a55807e316b4ac9a538adb949138f6b47c00f3b9"
   integrity sha512-2cAdUhLvJK+4yKTU3tSRrrYT7W6ofgsdn6hhMtRgcTTZsA4JRNFLB/XGcdvW46R8YcLnf1Qz9nM3n7tHo2X1nA==
 
+"@reatom/debug@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@reatom/debug/-/debug-1.1.1.tgz#6710827a34d6057c49f3fcd61fe7fe0e1456932d"
+  integrity sha512-lfP9cyb7vLp8SZ3aT5CSlgaAD+oQqmOVzAkfmXmBKjJgF5zTwhRd+7f8mCWws6OvAlUAkxrmrZRU8egnWn5ETg==
+
+"@reatom/react@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@reatom/react/-/react-1.0.0.tgz#f8825ea6edebf15addf671880ccf0e93980e3c71"
+  integrity sha512-uYAxiwHZV0kPTq7xTa/qGORGllG/q3Tn86dfhkZADAm7NW8oX6OpwMCCCmUM+aWZiqCDx6un4YLMESXU3wXB+g==
+
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-4.2.0.tgz#dadcb6218503532d6884b210e7f3c502caaa44b1"
