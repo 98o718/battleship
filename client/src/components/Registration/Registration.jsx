@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { BarLoader } from 'react-spinners'
+import { useCookies } from 'react-cookie'
+import { useAction } from '@reatom/react'
 
 import {
   RegistrationWrapper,
@@ -14,6 +16,7 @@ import {
 import reg from '../../assets/reg.png'
 
 import Button from '../Button'
+import { login } from '../../model'
 
 const Registration = props => {
   const [credentials, setCredentials] = useState({
@@ -22,6 +25,8 @@ const Registration = props => {
     password: '',
   })
   const [loading, setLoading] = useState(false)
+  const [, setCookie] = useCookies()
+  const doLogin = useAction(login)
 
   const validate = () => {
     const { email, username, password } = credentials
@@ -69,8 +74,10 @@ const Registration = props => {
 
         if (!result.ok) {
           toast.error(data.message)
-        } else {
+        } else if (data.token) {
           toast.success('Успешная регистрация!')
+          setCookie('token', data.token)
+          doLogin(credentials)
           props.setActive(false)
         }
         setLoading(false)
