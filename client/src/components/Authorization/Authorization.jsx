@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { BarLoader } from 'react-spinners'
+import { useCookies } from 'react-cookie'
+import { useAction } from '@reatom/react'
 
 import {
   AuthorizationWrapper,
@@ -13,6 +15,7 @@ import {
 } from './Authorization.styles'
 
 import Button from '../Button'
+import { login } from '../../model'
 import authImg from '../../assets/authImg.png'
 
 const Authorization = props => {
@@ -21,6 +24,8 @@ const Authorization = props => {
     password: '',
   })
   const [loading, setLoading] = useState(false)
+  const [, setCookie] = useCookies()
+  const doLogin = useAction(login)
 
   const validate = () => {
     const { email, password } = credentials
@@ -67,6 +72,8 @@ const Authorization = props => {
           toast.error(data.message)
         } else {
           toast.success('Успешная авторизация!')
+          setCookie('token', data.token)
+          doLogin(data)
           props.setActive(false)
         }
         setLoading(false)
