@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Logo, Button, Authorization, Registration } from '../../components'
 import { Link, useLocation } from 'wouter'
+import { useAtom, useAction } from '@reatom/react'
+
 import {
   StartWrapper,
   Wave,
@@ -13,8 +14,11 @@ import {
   Auth,
   AuthImg,
   LinkContainer,
+  LogoutButton,
 } from './Start.styles'
 
+import { Logo, Button, Authorization, Registration } from '../../components'
+import { authAtom, usernameAtom, logout } from '../../model'
 import authImg from '../../assets/authImg.png'
 import wave from '../../assets/wave.svg'
 import macaroni from '../../assets/macaroniLogo.png'
@@ -25,7 +29,12 @@ export const Start = () => {
   const [auth, setAuth] = useState(false)
   const [reg, setReg] = useState(false)
 
+  const isAuth = useAtom(authAtom)
+  const username = useAtom(usernameAtom)
+  const doLogout = useAction(logout)
+
   const [, setLocation] = useLocation()
+
   const handleNewRoom = () => {
     fetch(process.env.REACT_APP_GENERATE_ROOM_URL)
       .then(r => r.text())
@@ -35,25 +44,33 @@ export const Start = () => {
     <StartWrapper>
       <Logo></Logo>
       <Auth>
-        <AuthImg src={authImg} />
+        {!isAuth && <AuthImg src={authImg} />}
         <LinkContainer>
-          <Link
-            to="/"
-            onClick={() => {
-              setAuth(true)
-            }}
-          >
-            Войти
-          </Link>{' '}
-          |{' '}
-          <Link
-            to="/"
-            onClick={() => {
-              setReg(true)
-            }}
-          >
-            Регистрация
-          </Link>
+          {isAuth ? (
+            <>
+              {username} | <LogoutButton onClick={doLogout}>Выход</LogoutButton>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/"
+                onClick={() => {
+                  setAuth(true)
+                }}
+              >
+                Войти
+              </Link>{' '}
+              |{' '}
+              <Link
+                to="/"
+                onClick={() => {
+                  setReg(true)
+                }}
+              >
+                Регистрация
+              </Link>
+            </>
+          )}
         </LinkContainer>
       </Auth>
       <Registration
