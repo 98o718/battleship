@@ -117,6 +117,14 @@ const PlayField = () => {
   }, [setLocation])
 
   useEffect(() => {
+    return () => {
+      if (sio) {
+        sio.close()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     ships && placeShips(ships)
   }, [ships])
 
