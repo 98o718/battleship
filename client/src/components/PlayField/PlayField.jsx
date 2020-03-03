@@ -113,16 +113,10 @@ const PlayField = () => {
       toast.error('Противник отключился!')
       setLocation('/')
     })
+
+    return () => socket.close()
     // eslint-disable-next-line
   }, [setLocation])
-
-  useEffect(() => {
-    return () => {
-      if (sio) {
-        sio.close()
-      }
-    }
-  }, [])
 
   useEffect(() => {
     ships && placeShips(ships)
