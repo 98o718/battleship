@@ -18,7 +18,7 @@ const Authorization = props => {
     >
       <Form active={props.active} onClick={e => e.stopPropagation()}>
         <Img src={authImg} alt="authImg" />
-        <p>
+        <div>
           <Logo>Авторизация</Logo>
           <Line />
           <Change
@@ -30,7 +30,7 @@ const Authorization = props => {
           >
             Регистрация
           </Change>
-        </p>
+        </div>
         <Input type="text" placeholder="Логин или email" />
         <Input type="password" placeholder="Пароль" />
         <Button type="submit" state="form" text="Войти" />
