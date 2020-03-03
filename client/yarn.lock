@@ -1242,6 +1242,11 @@
   resolved "https://registry.yarnpkg.com/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz#a3031eb54129f2c66b2753f8404266ec7bf67f0a"
   integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
 
+"@reatom/core@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@reatom/core/-/core-1.1.0.tgz#a55807e316b4ac9a538adb949138f6b47c00f3b9"
+  integrity sha512-2cAdUhLvJK+4yKTU3tSRrrYT7W6ofgsdn6hhMtRgcTTZsA4JRNFLB/XGcdvW46R8YcLnf1Qz9nM3n7tHo2X1nA==
+
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-4.2.0.tgz#dadcb6218503532d6884b210e7f3c502caaa44b1"
