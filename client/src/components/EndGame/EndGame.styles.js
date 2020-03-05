@@ -50,7 +50,8 @@ export const Image = styled.div`
 export const Text = styled.div`
   width: 60%;
   height: 100%;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   align-content: center;
   justify-content: center;
@@ -60,8 +61,10 @@ export const Text = styled.div`
     font-weight: 500;
     margin: -15px 0;
     font-size: 3rem;
+    margin-bottom: 15px;
   }
   p {
+    margin-top: 0;
     font-size: 3rem;
     margin-bottom: 30px;
     img {
