@@ -8,6 +8,7 @@ const validator = require('email-validator')
 const db = require('./../db')
 const config = require('./../config')
 const mailer = require('./../mailer')
+const { countWins } = require('../services/statService')
 
 const User = require('./../models/user')
 
@@ -77,11 +78,14 @@ router.post('/login', (req, res) => {
 
         const token = jwt.sign(payload, config.jwt.secret)
 
+        const counts = await countWins(user.id)
+
         res.json({
           status: true,
           username: user.username,
           rating: user.rating,
           token,
+          counts,
         })
       } else {
         return res.status(400).json({
