@@ -80,6 +80,7 @@ router.post('/login', (req, res) => {
         res.json({
           status: true,
           username: user.username,
+          rating: user.rating,
           token,
         })
       } else {
@@ -156,6 +157,7 @@ router.post('/sign-up', async (req, res) => {
     return res.json({
       status: true,
       token,
+      rating: user.rating,
     })
   })
 })
