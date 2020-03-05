@@ -14,6 +14,7 @@ import {
 import { shipSizes, shipTypes } from '../../constants'
 
 import { Button, EndGame, Field, ShipPicker } from '..'
+import GiveUp from '../GiveUp'
 
 const PlayField = props => {
   const [, params] = useRoute('/game/:room')
@@ -28,6 +29,8 @@ const PlayField = props => {
   const [endGame, setEndGame] = useState(false)
   const [winner, setWinner] = useState(undefined)
   const [arrange, setArrange] = useState(false)
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const template = [
     shipTypes.FERRY,
@@ -169,11 +172,10 @@ const PlayField = props => {
 
       sio.off('gameover')
       sio.on('gameover', num => {
+        setEndGame(true)
         if (player === num) {
-          setEndGame(true)
           setWinner(true)
         } else {
-          setEndGame(true)
           setWinner(false)
         }
       })
@@ -392,7 +394,6 @@ const PlayField = props => {
       return b
     })
   }
-
   return (
     <DndProvider backend={Backend}>
       <PlayFieldWrapper>
@@ -405,9 +406,17 @@ const PlayField = props => {
           <Field matrix={myField} dropShip={dropShip} canPlace={canPlace} />
           <CenterField>
             {turn >= 0 ? (
-              <p>
-                Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
-              </p>
+              <>
+                <p>
+                  Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
+                </p>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  state="giveUp"
+                  style={{ marginBottom: 15 }}
+                  text="Сдаться"
+                />
+              </>
             ) : (
               <>
                 {arrange && (
@@ -460,6 +469,7 @@ const PlayField = props => {
             />
           )}
         </FieldsWrapper>
+        <GiveUp isOpen={isOpen} setIsOpen={setIsOpen} />
         <EndGame active={endGame} state={winner} />
       </PlayFieldWrapper>
     </DndProvider>

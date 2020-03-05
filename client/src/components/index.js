@@ -1,4 +1,5 @@
 /*APPEND COMPONENT IMPORT HERE*/
+import GiveUp from './GiveUp'
 import Ship from './Ship'
 import ShipPicker from './ShipPicker'
 import Field from './Field'
@@ -12,6 +13,7 @@ import EndGame from './EndGame'
 
 export {
   /*APPEND COMPONENT EXPORT HERE*/
+  GiveUp,
   Ship,
   ShipPicker,
   Field,

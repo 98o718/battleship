@@ -49,6 +49,17 @@ const common = css`
   font-size: 12pt;
 `
 
+const giveUp = css`
+  background-color: #f56265;
+  border: none;
+  color: white;
+  width: 9rem;
+  padding: 1rem;
+  border-radius: 10px;
+  transition: 0.14s;
+  font-size: 12pt;
+`
+
 const defaultState = css`
   background-color: blue;
   color: white;
@@ -84,6 +95,8 @@ export const ButtonWrapper = styled.button(props => {
       return common
     case 'form':
       return form
+    case 'giveUp':
+      return giveUp
     default:
       return defaultState
   }
