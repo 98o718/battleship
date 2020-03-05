@@ -77,7 +77,7 @@ const Registration = props => {
         } else if (data.token) {
           toast.success('Успешная регистрация!')
           setCookie('token', data.token)
-          doLogin(credentials)
+          doLogin(data)
           props.setActive(false)
         }
         setLoading(false)
