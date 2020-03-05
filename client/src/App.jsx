@@ -8,7 +8,7 @@ import { useAtom } from '@reatom/react'
 import { connectReduxDevtools } from '@reatom/debug'
 
 import { Game, Start, WaitingRoom } from './pages'
-import { authAtom, usernameAtom } from './model'
+import { authAtom, userAtom, gameTypeAtom } from './model'
 
 export const App = ({ store }) => {
   useEffect(() => {
@@ -25,7 +25,8 @@ export const App = ({ store }) => {
   })
 
   useAtom(authAtom, () => null, [])
-  useAtom(usernameAtom, () => null, [])
+  useAtom(userAtom, () => null, [])
+  useAtom(gameTypeAtom, () => null, [])
 
   return (
     <>
@@ -51,6 +52,7 @@ export const App = ({ store }) => {
         `}
       />
       <ToastContainer />
+      <Route path="/rating-waiting-room" component={WaitingRoom} />
       <Route path="/waiting-room" component={WaitingRoom} />
       <Route path="/game/:room" component={Game} />
       <Route path="/" extends component={Start} />

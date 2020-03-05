@@ -4,6 +4,7 @@ import { useRoute, useLocation } from 'wouter'
 import { toast } from 'react-toastify'
 import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
+import { useAtom, useAction } from '@reatom/react'
 
 import {
   PlayFieldWrapper,
@@ -11,13 +12,14 @@ import {
   CenterField,
 } from './PlayField.styles'
 
-import { shipSizes, shipTypes } from '../../constants'
+import { shipSizes, shipTypes, gameTypes } from '../../constants'
 
 import { Button, EndGame, Field, ShipPicker } from '..'
+import { authAtom, userAtom, gameTypeAtom, updateUser } from '../../model'
 
 const PlayField = props => {
-  const [, params] = useRoute('/game/:room')
   const [, setLocation] = useLocation()
+  const [, params] = useRoute(`/game/:room`)
 
   const [player, setPlayer] = useState(undefined)
   const [turn, setTurn] = useState(undefined)
@@ -28,6 +30,15 @@ const PlayField = props => {
   const [endGame, setEndGame] = useState(false)
   const [winner, setWinner] = useState(undefined)
   const [arrange, setArrange] = useState(false)
+  const [opponent, setOpponent] = useState(undefined)
+  const [rating, setRating] = useState(null)
+  const [newRating, setNewRating] = useState(null)
+
+  const isAuth = useAtom(authAtom)
+  const user = useAtom(userAtom)
+  const gameType = useAtom(gameTypeAtom)
+
+  const doUpdateUser = useAction(updateUser)
 
   const template = [
     shipTypes.FERRY,
@@ -92,6 +103,10 @@ const PlayField = props => {
       }
     })
 
+    if (isAuth && user !== null) {
+      setRating(user.rating)
+    }
+
     const socket = io({ endpoint: process.env.REACT_APP_WS_ENDPOINT })
     setSio(socket)
 
@@ -100,18 +115,6 @@ const PlayField = props => {
     setOpponentField([...Array(10)].map(() => Array(10).fill(0)))
 
     socket.on('player', player => setPlayer(player))
-
-    socket.on('start', turn => {
-      setTurn(turn)
-      props.setGame(false)
-      toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
-    })
-
-    socket.on('leave', () => {
-      socket.close()
-      toast.error('Противник отключился!')
-      setLocation('/')
-    })
 
     return () => socket.close()
     // eslint-disable-next-line
@@ -129,6 +132,14 @@ const PlayField = props => {
     }
 
     if (sio) {
+      sio.off('start')
+      sio.on('start', ({ turn, players }) => {
+        setTurn(turn)
+        props.setGame(false)
+        setOpponent(players[(player + 1) % 2])
+        toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
+      })
+
       sio.off('result')
       sio.on('result', payload => {
         const { hit, shot } = payload
@@ -167,18 +178,49 @@ const PlayField = props => {
         }
       })
 
+      sio.off('leave')
+      sio.on('leave', () => {
+        if (!endGame) {
+          sio.close()
+          toast.error('Противник отключился!')
+          setLocation('/')
+        }
+      })
+
       sio.off('gameover')
-      sio.on('gameover', num => {
-        if (player === num) {
+      sio.on('gameover', ({ turn, rating }) => {
+        if (player === turn) {
           setEndGame(true)
           setWinner(true)
         } else {
           setEndGame(true)
           setWinner(false)
         }
+
+        if (gameType === gameTypes.RANKED) {
+          if (player === turn) {
+            setNewRating(rating.winner)
+            doUpdateUser({
+              rating: rating.winner,
+              counts: {
+                wins: ++user.counts.wins,
+                loss: user.counts.loss,
+              },
+            })
+          } else {
+            setNewRating(rating.loser)
+            doUpdateUser({
+              rating: rating.loser,
+              counts: {
+                wins: user.counts.wins,
+                loss: ++user.counts.loss,
+              },
+            })
+          }
+        }
       })
     }
-  }, [player, turn, sio, ships])
+  }, [player, turn, sio, ships, endGame])
 
   const handleShot = (x, y) => {
     if (turn >= 0 && turn === player && opponentField[y][x] === 0)
@@ -191,6 +233,8 @@ const PlayField = props => {
   const handleReady = () => {
     sio.emit('ready', {
       ships,
+      user: isAuth ? user : null,
+      gameType,
     })
   }
 
@@ -402,8 +446,22 @@ const PlayField = props => {
               ships={ships && ships.length === 10 ? [] : shipsTemplate}
             />
           )}
-          <Field matrix={myField} dropShip={dropShip} canPlace={canPlace} />
+          <Field
+            matrix={myField}
+            dropShip={dropShip}
+            canPlace={canPlace}
+            player={isAuth ? user : { username: 'ИГРОК 1' }}
+          />
           <CenterField>
+            {gameType === gameTypes.RANKED && (
+              <span
+                role="img"
+                aria-label="star emoji"
+                style={{ marginBottom: 15 }}
+              >
+                ⭐️
+              </span>
+            )}
             {turn >= 0 ? (
               <p>
                 Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
@@ -457,10 +515,18 @@ const PlayField = props => {
               dropShip={dropShip}
               canPlace={canPlace}
               style={{ opacity: turn === player ? 1 : 0.2 }}
+              player={opponent ? opponent : { username: 'ПРОТИВНИК' }}
             />
           )}
         </FieldsWrapper>
-        <EndGame active={endGame} state={winner} />
+        <EndGame
+          active={endGame}
+          state={winner}
+          rating={
+            gameType === gameTypes.RANKED && user !== null ? rating : null
+          }
+          newRating={newRating}
+        />
       </PlayFieldWrapper>
     </DndProvider>
   )
