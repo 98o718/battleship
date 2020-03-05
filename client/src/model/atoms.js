@@ -1,7 +1,9 @@
 import { declareAtom } from '@reatom/core'
 import Cookies from 'universal-cookie'
 
-import { login, logout } from '.'
+import { gameTypes } from '../constants'
+
+import { login, logout, setGameType, updateUser } from './actions'
 
 const cookies = new Cookies()
 
@@ -13,7 +15,12 @@ export const authAtom = declareAtom(['isAuth'], false, on => [
   }),
 ])
 
-export const usernameAtom = declareAtom(['username'], '', on => [
-  on(login, (state, value) => value.username),
+export const userAtom = declareAtom(['user'], null, on => [
+  on(login, (state, value) => value),
   on(logout, () => ''),
+  on(updateUser, (state, value) => Object.assign({}, state, value)),
+])
+
+export const gameTypeAtom = declareAtom(['gameType'], gameTypes.REGULAR, on => [
+  on(setGameType, (state, value) => value),
 ])
