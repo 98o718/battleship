@@ -5,7 +5,7 @@ module.exports = io => {
 
   const games = {}
 
-  let waitingRoom = []
+  const waitingRoom = {}
 
   io.sockets.on('connection', socket => {
     users[socket.id] = {
@@ -22,7 +22,9 @@ module.exports = io => {
       delete games[room]
       delete users[socket.id]
 
-      waitingRoom = waitingRoom.filter(id => id !== socket.id)
+      for (const [key, value] of Object.entries(waitingRoom)) {
+        waitingRoom[key] = waitingRoom[key].filter(id => id !== socket.id)
+      }
 
       io.to(room).emit('leave')
     })
@@ -107,14 +109,19 @@ module.exports = io => {
       }
     })
 
-    socket.on('waiting-room', () => {
-      waitingRoom.push(socket.id)
+    socket.on('wait', room => {
+      console.log(room)
+      if (!waitingRoom[room]) {
+        waitingRoom[room] = []
+      }
 
-      if (waitingRoom.length === 2) {
-        const room = roomGenerator()
+      waitingRoom[room].push(socket.id)
 
-        io.to(waitingRoom.pop()).emit('game-ready', room)
-        io.to(waitingRoom.pop()).emit('game-ready', room)
+      if (waitingRoom[room].length === 2) {
+        const gameRoom = roomGenerator()
+
+        io.to(waitingRoom[room].pop()).emit('game-ready', gameRoom)
+        io.to(waitingRoom[room].pop()).emit('game-ready', gameRoom)
       }
     })
 
