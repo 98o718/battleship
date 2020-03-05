@@ -14,8 +14,10 @@ import {
 
 import { shipSizes, shipTypes, gameTypes } from '../../constants'
 
-import { Button, EndGame, Field, ShipPicker } from '..'
+import { Button, EndGame, Field, ShipPicker, GiveUp } from '..'
+
 import { authAtom, userAtom, gameTypeAtom, updateUser } from '../../model'
+
 
 const PlayField = props => {
   const [, setLocation] = useLocation()
@@ -39,6 +41,8 @@ const PlayField = props => {
   const gameType = useAtom(gameTypeAtom)
 
   const doUpdateUser = useAction(updateUser)
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const template = [
     shipTypes.FERRY,
@@ -436,7 +440,6 @@ const PlayField = props => {
       return b
     })
   }
-
   return (
     <DndProvider backend={Backend}>
       <PlayFieldWrapper>
@@ -463,9 +466,17 @@ const PlayField = props => {
               </span>
             )}
             {turn >= 0 ? (
-              <p>
-                Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
-              </p>
+              <>
+                <p>
+                  Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
+                </p>
+                <Button
+                  onClick={() => setIsOpen(true)}
+                  state="giveUp"
+                  style={{ marginBottom: 15 }}
+                  text="Сдаться"
+                />
+              </>
             ) : (
               <>
                 {arrange && (
@@ -519,6 +530,7 @@ const PlayField = props => {
             />
           )}
         </FieldsWrapper>
+        <GiveUp isOpen={isOpen} setIsOpen={setIsOpen} />
         <EndGame
           active={endGame}
           state={winner}
