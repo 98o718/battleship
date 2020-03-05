@@ -142,7 +142,7 @@ router.post('/sign-up', async (req, res) => {
     password: passwordHashed,
   })
 
-  user.save(err => {
+  user.save(async err => {
     if (err) {
       return res.status(500).json({
         status: false,
@@ -157,11 +157,15 @@ router.post('/sign-up', async (req, res) => {
     }
 
     const token = jwt.sign(payload, config.jwt.secret)
+    const counts = await countWins(user.id)
+    const { username, rating } = user
 
     return res.json({
       status: true,
       token,
-      rating: user.rating,
+      username,
+      rating,
+      counts,
     })
   })
 })
