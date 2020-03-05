@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const { countWins } = require('../services/statService')
+
 const User = require('./../models/user')
 const Stat = require('./../models/stat')
 
@@ -30,10 +32,9 @@ router.get('/', async (req, res) => {
 router.get('/counts', async (req, res) => {
   const { id } = res.locals.auth
 
-  const wins = await Stat.find({ winner: id }).countDocuments()
-  const loss = await Stat.find({ loser: id }).countDocuments()
+  const counts = await countWins(id)
 
-  return res.json({ wins, loss })
+  return res.json(counts)
 })
 
 router.get('/rating', async (req, res) => {

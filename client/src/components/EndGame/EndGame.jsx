@@ -5,24 +5,24 @@ import { Link } from 'wouter'
 
 import scroll from '../../assets/scroll.png'
 
-const EndGame = props => {
-  const [rating, setRating] = useState(undefined)
-  const [state, setState] = useState(undefined)
-  useEffect(() => {
-    if (props.active) setRating(800)
-    if (props.state) setState('Победа!')
-    else setState('Поражение')
-  }, [props.active, props.state])
+const EndGame = ({ state, active, rating, newRating }) => {
   return (
-    <EndGameWrapper active={props.active} state={props.state}>
-      <Container active={props.active}>
-        <Image state={props.state} />
+    <EndGameWrapper active={active} state={state}>
+      <Container active={active}>
+        <Image state={state} />
         <Text>
-          <h1>{state}</h1>
-          <p>
-            <img src={scroll} alt="scroll rating" /> &#160;
-            <CountUp start={rating} end={rating + 25} delay={2}></CountUp>
-          </p>
+          <h1>{state ? 'Победа!' : 'Поражение'}</h1>
+
+          {rating !== null && (
+            <p>
+              <img src={scroll} alt="scroll rating" /> &#160;
+              <CountUp
+                start={rating}
+                end={newRating === null ? rating : newRating}
+                delay={5}
+              />
+            </p>
+          )}
           <Link to="/">Вернуться на главную</Link>
         </Text>
       </Container>

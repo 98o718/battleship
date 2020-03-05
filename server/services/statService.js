@@ -33,6 +33,14 @@ const updateRating = async (winner, loser) => {
   return { winner: win.rating, loser: lose.rating }
 }
 
+const countWins = async id => {
+  const wins = await Stat.find({ winner: id }).countDocuments()
+  const loss = await Stat.find({ loser: id }).countDocuments()
+
+  return { wins, loss }
+}
+
 module.exports = {
   updateRating,
+  countWins,
 }

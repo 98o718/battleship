@@ -93,6 +93,8 @@ export const GameMenu = styled.section`
   width: 33rem;
   min-width: fit-content;
   padding: 15px;
+  padding-bottom: 90px;
+  height: fit-content;
   height: 70%;
   top: auto;
   bottom: 0;

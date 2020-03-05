@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'wouter'
 import { useAtom, useAction } from '@reatom/react'
+
+import { gameTypes } from '../../constants'
 
 import {
   StartWrapper,
@@ -18,7 +20,7 @@ import {
 } from './Start.styles'
 
 import { Logo, Button, Authorization, Registration } from '../../components'
-import { authAtom, usernameAtom, logout } from '../../model'
+import { authAtom, userAtom, logout, setGameType } from '../../model'
 import authImg from '../../assets/authImg.png'
 import wave from '../../assets/wave.svg'
 import macaroni from '../../assets/macaroniLogo.png'
@@ -30,10 +32,15 @@ export const Start = () => {
   const [reg, setReg] = useState(false)
 
   const isAuth = useAtom(authAtom)
-  const username = useAtom(usernameAtom)
+  const user = useAtom(userAtom)
   const doLogout = useAction(logout)
+  const doSetGameType = useAction(setGameType)
 
   const [, setLocation] = useLocation()
+
+  useEffect(() => {
+    doSetGameType(gameTypes.REGULAR)
+  }, [])
 
   const handleNewRoom = () => {
     fetch(process.env.REACT_APP_GENERATE_ROOM_URL)
@@ -46,9 +53,10 @@ export const Start = () => {
       <Auth>
         {!isAuth && <AuthImg src={authImg} />}
         <LinkContainer>
-          {isAuth ? (
+          {isAuth && user !== null ? (
             <>
-              {username} | <LogoutButton onClick={doLogout}>Выход</LogoutButton>
+              {user.username} |{' '}
+              <LogoutButton onClick={doLogout}>Выход</LogoutButton>
             </>
           ) : (
             <>
@@ -87,6 +95,16 @@ export const Start = () => {
       />
       <GameMenu>
         <Text>Выбор режима</Text>
+        {isAuth && (
+          <>
+            <Button
+              onClick={() => setLocation('/rating-waiting-room')}
+              state="start"
+              text="Игра на рейтинг"
+            />
+            <Line />
+          </>
+        )}
         <Button
           onClick={() => setLocation('/waiting-room')}
           state="start"

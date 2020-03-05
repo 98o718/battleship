@@ -1,11 +1,15 @@
 const { roomChecker, roomGenerator } = require('../utils/roomUtils')
+const { updateRating } = require('../services/statService')
+const config = require('./../config')
+
+const jwt = require('jsonwebtoken')
 
 module.exports = io => {
   const users = {}
 
   const games = {}
 
-  let waitingRoom = []
+  const waitingRoom = {}
 
   io.sockets.on('connection', socket => {
     users[socket.id] = {
@@ -14,6 +18,11 @@ module.exports = io => {
       room: null,
       ships: null,
       flatShips: null,
+      username: null,
+      rating: null,
+      token: null,
+      counts: null,
+      gameType: null,
     }
 
     socket.on('disconnect', () => {
@@ -22,7 +31,9 @@ module.exports = io => {
       delete games[room]
       delete users[socket.id]
 
-      waitingRoom = waitingRoom.filter(id => id !== socket.id)
+      for (const [key, value] of Object.entries(waitingRoom)) {
+        waitingRoom[key] = waitingRoom[key].filter(id => id !== socket.id)
+      }
 
       io.to(room).emit('leave')
     })
@@ -37,6 +48,7 @@ module.exports = io => {
 
         console.log('players in room:', games[room].players)
 
+        users[socket.id].gameType = payload.gameType
         users[socket.id].player = readyPlayers - 1
         users[socket.id].ships = payload.ships.map((ship, idx) => {
           return {
@@ -47,18 +59,38 @@ module.exports = io => {
           }
         })
 
-        console.log(users[socket.id].ships)
+        if (payload.user) {
+          users[socket.id].username = payload.user.username
+          users[socket.id].token = payload.user.token
+          users[socket.id].counts = payload.user.counts
+          users[socket.id].rating = payload.user.rating
+        }
+
         users[socket.id].flatShips = payload.ships.flat()
 
         io.to(socket.id).emit('player', readyPlayers - 1)
 
         if (readyPlayers === 2) {
-          io.to(room).emit('start', games[room].turn)
+          io.to(room).emit('start', {
+            turn: games[room].turn,
+            players: [
+              {
+                username: users[games[room].players[0]].username,
+                counts: users[games[room].players[0]].counts,
+                rating: users[games[room].players[0]].rating,
+              },
+              {
+                username: users[games[room].players[1]].username,
+                counts: users[games[room].players[1]].counts,
+                rating: users[games[room].players[1]].rating,
+              },
+            ],
+          })
         }
       }
     })
 
-    socket.on('shot', shot => {
+    socket.on('shot', async shot => {
       const { room } = users[socket.id]
       const { players, turn } = games[room]
 
@@ -102,19 +134,51 @@ module.exports = io => {
         }
 
         if (users[opponent].ships.length === 0) {
-          io.to(room).emit('gameover', turn)
+          if (
+            users[socket.id].gameType === 'ranking-game' &&
+            users[opponent].gameType === 'ranking-game'
+          ) {
+            try {
+              const { username } = jwt.verify(
+                users[socket.id].token,
+                config.jwt.secret
+              )
+              const { opponentUsername } = jwt.verify(
+                users[opponent].token,
+                config.jwt.secret
+              )
+
+              if (username === opponentUsername) {
+                throw new Error('Одинаковые имена!')
+              }
+
+              const rating = await updateRating(
+                users[socket.id].username,
+                users[opponent].username
+              )
+
+              io.to(room).emit('gameover', { turn, rating })
+            } catch (e) {}
+          } else {
+            io.to(room).emit('gameover', { turn })
+          }
         }
       }
     })
 
-    socket.on('waiting-room', () => {
-      waitingRoom.push(socket.id)
+    socket.on('wait', room => {
+      console.log(room)
+      if (!waitingRoom[room]) {
+        waitingRoom[room] = []
+      }
 
-      if (waitingRoom.length === 2) {
-        const room = roomGenerator()
+      waitingRoom[room].push(socket.id)
 
-        io.to(waitingRoom.pop()).emit('game-ready', room)
-        io.to(waitingRoom.pop()).emit('game-ready', room)
+      if (waitingRoom[room].length === 2) {
+        const gameRoom = roomGenerator()
+
+        io.to(waitingRoom[room].pop()).emit('game-ready', gameRoom)
+        io.to(waitingRoom[room].pop()).emit('game-ready', gameRoom)
       }
     })
 

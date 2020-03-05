@@ -11,3 +11,13 @@ export const shipSizes = {
   speedboat: 2,
   sailboat: 1,
 }
+
+export const gameTypes = {
+  REGULAR: 'game',
+  RANKED: 'ranking-game',
+}
+
+export const roomTypes = {
+  REGULAR: '/waiting-room',
+  RANKED: '/rating-waiting-room',
+}
