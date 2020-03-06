@@ -27,15 +27,22 @@ const GiveUp = props => {
       >
         <Container isOpen={props.isOpen}>
           <Image src={skull} alt="skull" />
-          <Text>Вы действительно хотите сдаться?</Text>
+          <Text>
+            Вы действительно хотите сдаться?
+            <br />
+            При игре на рейтинг, Вам будет засчитан проигрыш
+          </Text>
           <Button
             onClick={() => props.setIsOpen(false)}
-            text="Продолжить"
+            text="Продолжить игру"
             state="ready"
             style={{ margin: 15, width: 'auto' }}
           />
           <Button
-            onClick={() => props.setIsOpen(false)}
+            onClick={() => {
+              props.handleGiveUp()
+              props.setIsOpen(false)
+            }}
             text="Сдаться"
             state="giveUp"
             style={{ margin: 15 }}

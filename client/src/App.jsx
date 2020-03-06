@@ -51,7 +51,7 @@ export const App = ({ store }) => {
           }
         `}
       />
-      <ToastContainer />
+      <ToastContainer position="top-center" />
       <Route path="/rating-waiting-room" component={WaitingRoom} />
       <Route path="/waiting-room" component={WaitingRoom} />
       <Route path="/game/:room" component={Game} />
