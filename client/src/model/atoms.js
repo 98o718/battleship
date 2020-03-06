@@ -1,9 +1,9 @@
 import { declareAtom } from '@reatom/core'
 import Cookies from 'universal-cookie'
 
-import { gameTypes } from '../constants'
+import { gameTypes, roomTypes } from '../constants'
 
-import { login, logout, setGameType, updateUser } from './actions'
+import { login, logout, setGameType, updateUser, setRoomType } from './actions'
 
 const cookies = new Cookies()
 
@@ -23,4 +23,8 @@ export const userAtom = declareAtom(['user'], null, on => [
 
 export const gameTypeAtom = declareAtom(['gameType'], gameTypes.REGULAR, on => [
   on(setGameType, (state, value) => value),
+])
+
+export const roomTypeAtom = declareAtom(['roomType'], roomTypes.FRIEND, on => [
+  on(setRoomType, (state, value) => value),
 ])

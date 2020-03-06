@@ -6,13 +6,14 @@ import { useAtom, useAction } from '@reatom/react'
 import { roomTypes, gameTypes } from '../../constants'
 
 import { WaitingRoomWrapper } from './WaitingRoom.styles'
-import { authAtom, setGameType } from '../../model'
+import { authAtom, setGameType, setRoomType } from '../../model'
 
 const WaitingRoom = () => {
   const [location, setLocation] = useLocation()
 
   const isAuth = useAtom(authAtom)
   const doSetGameType = useAction(setGameType)
+  const doSetRoomType = useAction(setRoomType)
 
   useEffect(() => {
     const socket = io({ endpoint: process.env.REACT_APP_WS_ENDPOINT })
@@ -28,8 +29,10 @@ const WaitingRoom = () => {
 
       if (location === roomTypes.RANKED) {
         doSetGameType(gameTypes.RANKED)
-      } else {
+        doSetRoomType(roomTypes.RANKED)
+      } else if (location === roomTypes.REGULAR) {
         doSetGameType(gameTypes.REGULAR)
+        doSetRoomType(roomTypes.REGULAR)
       }
 
       setLocation(`/game/${room}`)

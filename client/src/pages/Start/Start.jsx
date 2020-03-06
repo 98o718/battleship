@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'wouter'
 import { useAtom, useAction } from '@reatom/react'
 
-import { gameTypes } from '../../constants'
+import { gameTypes, roomTypes } from '../../constants'
 
 import {
   StartWrapper,
@@ -23,7 +23,13 @@ import {
 } from './Start.styles'
 
 import { Logo, Button, Authorization, Registration } from '../../components'
-import { authAtom, userAtom, logout, setGameType } from '../../model'
+import {
+  authAtom,
+  userAtom,
+  logout,
+  setGameType,
+  setRoomType,
+} from '../../model'
 import authImg from '../../assets/authImg.png'
 import wave from '../../assets/wave.svg'
 import macaroni from '../../assets/macaroniLogo.png'
@@ -38,11 +44,13 @@ export const Start = () => {
   const user = useAtom(userAtom)
   const doLogout = useAction(logout)
   const doSetGameType = useAction(setGameType)
+  const doSetRoomType = useAction(setRoomType)
 
   const [, setLocation] = useLocation()
 
   useEffect(() => {
     doSetGameType(gameTypes.REGULAR)
+    doSetRoomType(roomTypes.FRIEND)
   }, [])
 
   const handleNewRoom = () => {
