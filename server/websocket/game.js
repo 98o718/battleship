@@ -38,18 +38,59 @@ module.exports = io => {
       io.to(room).emit('leave')
     })
 
+    socket.on('giveup', async () => {
+      const { room, player } = users[socket.id]
+      const { players } = games[room]
+
+      const opponent = players[(users[socket.id].player + 1) % 2]
+
+      if (
+        users[socket.id].gameType === 'ranking-game' &&
+        users[opponent].gameType === 'ranking-game'
+      ) {
+        console.log('kek')
+        try {
+          const { username } = jwt.verify(
+            users[socket.id].token,
+            config.jwt.secret
+          )
+          const { opponentUsername } = jwt.verify(
+            users[opponent].token,
+            config.jwt.secret
+          )
+
+          if (username === opponentUsername) {
+            throw new Error('Одинаковые имена!')
+          }
+
+          const rating = await updateRating(
+            users[opponent].username,
+            users[socket.id].username
+          )
+
+          io.to(room).emit('giveup', { player, rating })
+        } catch (e) {
+          console.log(e)
+        }
+      } else {
+        io.to(room).emit('giveup', { player })
+      }
+    })
+
     socket.on('ready', payload => {
       const { room } = users[socket.id]
-      if (games[room].players && !games[room].players.includes(socket.id)) {
-        games[room].players.push(socket.id)
+      if (
+        games[room] &&
+        games[room].ready &&
+        !games[room].ready.includes(socket.id)
+      ) {
+        games[room].ready.push(socket.id)
         console.log('room', room)
 
-        const readyPlayers = games[room].players.length
+        const readyPlayers = games[room].ready.length
 
-        console.log('players in room:', games[room].players)
+        console.log('ready players in room:', games[room].ready)
 
-        users[socket.id].gameType = payload.gameType
-        users[socket.id].player = readyPlayers - 1
         users[socket.id].ships = payload.ships.map((ship, idx) => {
           return {
             id: idx,
@@ -59,32 +100,11 @@ module.exports = io => {
           }
         })
 
-        if (payload.user) {
-          users[socket.id].username = payload.user.username
-          users[socket.id].token = payload.user.token
-          users[socket.id].counts = payload.user.counts
-          users[socket.id].rating = payload.user.rating
-        }
-
         users[socket.id].flatShips = payload.ships.flat()
-
-        io.to(socket.id).emit('player', readyPlayers - 1)
 
         if (readyPlayers === 2) {
           io.to(room).emit('start', {
             turn: games[room].turn,
-            players: [
-              {
-                username: users[games[room].players[0]].username,
-                counts: users[games[room].players[0]].counts,
-                rating: users[games[room].players[0]].rating,
-              },
-              {
-                username: users[games[room].players[1]].username,
-                counts: users[games[room].players[1]].counts,
-                rating: users[games[room].players[1]].rating,
-              },
-            ],
           })
         }
       }
@@ -93,8 +113,6 @@ module.exports = io => {
     socket.on('shot', async shot => {
       const { room } = users[socket.id]
       const { players, turn } = games[room]
-
-      console.log('shot')
 
       if (socket.id !== players[turn]) {
         // если чужая очередь
@@ -182,7 +200,7 @@ module.exports = io => {
       }
     })
 
-    socket.on('room', room => {
+    socket.on('room', ({ room, user, gameType }) => {
       if (
         roomChecker(room) &&
         (!io.sockets.adapter.rooms[room] ||
@@ -194,7 +212,41 @@ module.exports = io => {
         if (!games[room]) {
           games[room] = {
             players: [],
+            ready: [],
             turn: Math.floor(Math.random() * 2),
+          }
+        }
+
+        games[room].players.push(socket.id)
+
+        const readyPlayers = games[room].players.length
+
+        users[socket.id].player = readyPlayers - 1
+
+        users[socket.id].gameType = gameType
+
+        if (user !== null && user) {
+          users[socket.id].username = user.username
+          users[socket.id].token = user.token
+          users[socket.id].counts = user.counts
+          users[socket.id].rating = user.rating
+        }
+
+        if (readyPlayers === 2) {
+          for (let [idx, id] of games[room].players.entries()) {
+            let opponentIndex = (idx + 1) % 2
+
+            io.to(id).emit('player', {
+              player: idx,
+              opponent: users[games[room].players[opponentIndex]].username
+                ? {
+                    username:
+                      users[games[room].players[opponentIndex]].username,
+                    counts: users[games[room].players[opponentIndex]].counts,
+                    rating: users[games[room].players[opponentIndex]].rating,
+                  }
+                : null,
+            })
           }
         }
 
