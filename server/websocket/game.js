@@ -48,7 +48,6 @@ module.exports = io => {
         users[socket.id].gameType === 'ranking-game' &&
         users[opponent].gameType === 'ranking-game'
       ) {
-        console.log('kek')
         try {
           const { username } = jwt.verify(
             users[socket.id].token,
@@ -232,22 +231,19 @@ module.exports = io => {
           users[socket.id].rating = user.rating
         }
 
-        if (readyPlayers === 2) {
-          for (let [idx, id] of games[room].players.entries()) {
-            let opponentIndex = (idx + 1) % 2
+        for (let [idx, id] of games[room].players.entries()) {
+          let opponentIndex = (idx + 1) % 2
 
-            io.to(id).emit('player', {
-              player: idx,
-              opponent: users[games[room].players[opponentIndex]].username
-                ? {
-                    username:
-                      users[games[room].players[opponentIndex]].username,
-                    counts: users[games[room].players[opponentIndex]].counts,
-                    rating: users[games[room].players[opponentIndex]].rating,
-                  }
-                : null,
-            })
-          }
+          io.to(id).emit('player', {
+            player: idx,
+            opponent: games[room].players[opponentIndex]
+              ? {
+                  username: users[games[room].players[opponentIndex]].username,
+                  counts: users[games[room].players[opponentIndex]].counts,
+                  rating: users[games[room].players[opponentIndex]].rating,
+                }
+              : null,
+          })
         }
 
         console.log(socket.id)
