@@ -18,13 +18,13 @@ import { Button, EndGame, Field, ShipPicker, GiveUp } from '..'
 
 import { authAtom, userAtom, gameTypeAtom, updateUser } from '../../model'
 
-
 const PlayField = props => {
   const [, setLocation] = useLocation()
   const [, params] = useRoute(`/game/:room`)
 
   const [player, setPlayer] = useState(undefined)
-  const [turn, setTurn] = useState(undefined)
+  const [turn, setTurn] = useState(null)
+  const [ready, setReady] = useState(false)
   const [myField, setMyField] = useState(undefined)
   const [opponentField, setOpponentField] = useState(undefined)
   const [sio, setSio] = useState(undefined)
@@ -42,7 +42,7 @@ const PlayField = props => {
 
   const doUpdateUser = useAction(updateUser)
 
-  const [isOpen, setIsOpen] = useState(false)
+  const [isGiveUpOpen, setGiveUpOpen] = useState(false)
 
   const template = [
     shipTypes.FERRY,
@@ -100,7 +100,7 @@ const PlayField = props => {
       }),
     }).then(r => {
       if (r.ok) {
-        socket.emit('room', room)
+        socket.emit('room', { room, user: isAuth ? user : null, gameType })
       } else {
         toast.error('Комната уже заполнена!')
         setLocation('/')
@@ -118,7 +118,16 @@ const PlayField = props => {
 
     setOpponentField([...Array(10)].map(() => Array(10).fill(0)))
 
-    socket.on('player', player => setPlayer(player))
+    socket.on('player', ({ player, opponent }) => {
+      setPlayer(player)
+      setOpponent(opponent)
+    })
+
+    socket.on('start', ({ turn }) => {
+      setTurn(turn)
+      props.setGame(false)
+      toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
+    })
 
     return () => socket.close()
     // eslint-disable-next-line
@@ -136,14 +145,6 @@ const PlayField = props => {
     }
 
     if (sio) {
-      sio.off('start')
-      sio.on('start', ({ turn, players }) => {
-        setTurn(turn)
-        props.setGame(false)
-        setOpponent(players[(player + 1) % 2])
-        toast.success(`Игра началась, очередь игрока ${turn + 1}!`)
-      })
-
       sio.off('result')
       sio.on('result', payload => {
         const { hit, shot } = payload
@@ -223,11 +224,50 @@ const PlayField = props => {
           }
         }
       })
+
+      sio.off('giveup')
+      sio.on('giveup', ({ player: loser, rating }) => {
+        if (player === loser) {
+          setEndGame(true)
+          setWinner(false)
+        } else {
+          toast.error('Противник сдался!')
+          setEndGame(true)
+          setWinner(true)
+        }
+
+        if (gameType === gameTypes.RANKED) {
+          if (player === loser) {
+            setNewRating(rating.loser)
+            doUpdateUser({
+              rating: rating.loser,
+              counts: {
+                wins: user.counts.wins,
+                loss: ++user.counts.loss,
+              },
+            })
+          } else {
+            setNewRating(rating.winner)
+            doUpdateUser({
+              rating: rating.winner,
+              counts: {
+                wins: ++user.counts.wins,
+                loss: user.counts.loss,
+              },
+            })
+          }
+        }
+      })
     }
   }, [player, turn, sio, ships, endGame])
 
   const handleShot = (x, y) => {
-    if (turn >= 0 && turn === player && opponentField[y][x] === 0)
+    if (
+      turn !== null &&
+      turn >= 0 &&
+      turn === player &&
+      opponentField[y][x] === 0
+    )
       sio.emit('shot', {
         y,
         x,
@@ -235,16 +275,19 @@ const PlayField = props => {
   }
 
   const handleReady = () => {
+    setReady(true)
     sio.emit('ready', {
       ships,
-      user: isAuth ? user : null,
-      gameType,
     })
   }
 
   const handleReset = () => {
     setShipsTemplate(template)
     setShips([])
+  }
+
+  const handleGiveUp = () => {
+    sio.emit('giveup')
   }
 
   const handleRandom = () => {
@@ -465,13 +508,13 @@ const PlayField = props => {
                 ⭐️
               </span>
             )}
-            {turn >= 0 ? (
+            {turn !== null && turn >= 0 ? (
               <>
                 <p>
                   Вы игрок {player + 1}. <br /> Очередь игрока {turn + 1}
                 </p>
                 <Button
-                  onClick={() => setIsOpen(true)}
+                  onClick={() => setGiveUpOpen(true)}
                   state="giveUp"
                   style={{ marginBottom: 15 }}
                   text="Сдаться"
@@ -495,7 +538,7 @@ const PlayField = props => {
                     text="Случайно"
                   />
                 )}
-                {!arrange && (
+                {!arrange && !ready && (
                   <Button
                     onClick={() => setArrange(!arrange)}
                     state="common"
@@ -512,7 +555,7 @@ const PlayField = props => {
                       : handleReady
                   }
                   state="ready"
-                  disabled={ships.length < 10}
+                  disabled={ships.length < 10 || ready}
                   text={arrange ? 'Ок' : 'Готов'}
                 />
               </>
@@ -525,12 +568,18 @@ const PlayField = props => {
               handleShot={handleShot}
               dropShip={dropShip}
               canPlace={canPlace}
-              style={{ opacity: turn === player ? 1 : 0.2 }}
+              style={{
+                opacity: turn !== null ? (turn === player ? 1 : 0.2) : 1,
+              }}
               player={opponent ? opponent : { username: 'ПРОТИВНИК' }}
             />
           )}
         </FieldsWrapper>
-        <GiveUp isOpen={isOpen} setIsOpen={setIsOpen} />
+        <GiveUp
+          isOpen={isGiveUpOpen}
+          setIsOpen={setGiveUpOpen}
+          handleGiveUp={handleGiveUp}
+        />
         <EndGame
           active={endGame}
           state={winner}
