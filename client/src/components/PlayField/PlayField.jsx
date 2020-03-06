@@ -14,7 +14,7 @@ import {
 
 import { shipSizes, shipTypes, gameTypes } from '../../constants'
 
-import { Button, EndGame, Field, ShipPicker, GiveUp } from '..'
+import { Button, EndGame, Field, ShipPicker, GiveUp, CopyLink } from '..'
 
 import { authAtom, userAtom, gameTypeAtom, updateUser } from '../../model'
 
@@ -35,6 +35,7 @@ const PlayField = props => {
   const [opponent, setOpponent] = useState(undefined)
   const [rating, setRating] = useState(null)
   const [newRating, setNewRating] = useState(null)
+  const [copyLink, setCopyLink] = useState(true)
 
   const isAuth = useAtom(authAtom)
   const user = useAtom(userAtom)
@@ -483,6 +484,7 @@ const PlayField = props => {
       return b
     })
   }
+
   return (
     <DndProvider backend={Backend}>
       <PlayFieldWrapper>
@@ -580,6 +582,7 @@ const PlayField = props => {
           setIsOpen={setGiveUpOpen}
           handleGiveUp={handleGiveUp}
         />
+        <CopyLink isOpen={copyLink} setIsOpen={setCopyLink}></CopyLink>
         <EndGame
           active={endGame}
           state={winner}
