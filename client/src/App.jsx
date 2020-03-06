@@ -8,7 +8,7 @@ import { useAtom } from '@reatom/react'
 import { connectReduxDevtools } from '@reatom/debug'
 
 import { Game, Start, WaitingRoom } from './pages'
-import { authAtom, userAtom, gameTypeAtom } from './model'
+import { authAtom, userAtom, gameTypeAtom, roomTypeAtom } from './model'
 
 export const App = ({ store }) => {
   useEffect(() => {
@@ -27,6 +27,7 @@ export const App = ({ store }) => {
   useAtom(authAtom, () => null, [])
   useAtom(userAtom, () => null, [])
   useAtom(gameTypeAtom, () => null, [])
+  useAtom(roomTypeAtom, () => null, [])
 
   return (
     <>

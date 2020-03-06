@@ -20,4 +20,5 @@ export const gameTypes = {
 export const roomTypes = {
   REGULAR: '/waiting-room',
   RANKED: '/rating-waiting-room',
+  FRIEND: 'friend',
 }
