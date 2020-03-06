@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import io from 'socket.io-client'
 import { useRoute, useLocation } from 'wouter'
 import { toast } from 'react-toastify'
@@ -12,11 +12,17 @@ import {
   CenterField,
 } from './PlayField.styles'
 
-import { shipSizes, shipTypes, gameTypes } from '../../constants'
+import { shipSizes, shipTypes, gameTypes, roomTypes } from '../../constants'
 
 import { Button, EndGame, Field, ShipPicker, GiveUp, CopyLink } from '..'
 
-import { authAtom, userAtom, gameTypeAtom, updateUser } from '../../model'
+import {
+  authAtom,
+  userAtom,
+  gameTypeAtom,
+  roomTypeAtom,
+  updateUser,
+} from '../../model'
 
 const PlayField = props => {
   const [, setLocation] = useLocation()
@@ -35,11 +41,12 @@ const PlayField = props => {
   const [opponent, setOpponent] = useState(undefined)
   const [rating, setRating] = useState(null)
   const [newRating, setNewRating] = useState(null)
-  const [copyLink, setCopyLink] = useState(true)
+  const [copyLink, setCopyLink] = useState(false)
 
   const isAuth = useAtom(authAtom)
   const user = useAtom(userAtom)
   const gameType = useAtom(gameTypeAtom)
+  const roomType = useAtom(roomTypeAtom)
 
   const doUpdateUser = useAction(updateUser)
 
@@ -133,6 +140,18 @@ const PlayField = props => {
     return () => socket.close()
     // eslint-disable-next-line
   }, [setLocation])
+
+  const isFirstTime = useRef(true)
+
+  useEffect(() => {
+    if (isFirstTime.current) {
+      isFirstTime.current = false
+    } else {
+      if (opponent === null && roomType === roomTypes.FRIEND) {
+        setCopyLink(true)
+      }
+    }
+  }, [opponent])
 
   useEffect(() => {
     ships && placeShips(ships)
