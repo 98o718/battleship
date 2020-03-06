@@ -147,8 +147,12 @@ const PlayField = props => {
     if (isFirstTime.current) {
       isFirstTime.current = false
     } else {
-      if (opponent === null && roomType === roomTypes.FRIEND) {
-        setCopyLink(true)
+      if (roomType === roomTypes.FRIEND) {
+        if (opponent === null) {
+          setCopyLink(true)
+        } else {
+          setCopyLink(false)
+        }
       }
     }
   }, [opponent])
