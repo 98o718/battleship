@@ -17,6 +17,9 @@ import {
   AuthImg,
   LinkContainer,
   LogoutButton,
+  UserInfoWrappper,
+  UserInfo,
+  UserInfoEmoji,
 } from './Start.styles'
 
 import { Logo, Button, Authorization, Registration } from '../../components'
@@ -51,15 +54,39 @@ export const Start = () => {
     <StartWrapper>
       <Logo game={false}></Logo>
       <Auth>
-        {!isAuth && <AuthImg src={authImg} />}
         <LinkContainer>
           {isAuth && user !== null ? (
-            <>
-              {user.username} |{' '}
+            <UserInfoWrappper>
+              {user.counts && (
+                <UserInfo>
+                  <UserInfoEmoji role="img" aria-label="wins emoji">
+                    🎉
+                  </UserInfoEmoji>
+                  {user.counts.wins}
+                </UserInfo>
+              )}
+              {user.counts && (
+                <UserInfo>
+                  <UserInfoEmoji role="img" aria-label="loss emoji">
+                    💣
+                  </UserInfoEmoji>
+                  {user.counts.loss}
+                </UserInfo>
+              )}
+              {user.rating !== null && (
+                <UserInfo>
+                  <UserInfoEmoji role="img" aria-label="rating emoji">
+                    📜
+                  </UserInfoEmoji>
+                  {user.rating}
+                </UserInfo>
+              )}
+              <UserInfo>{user.username}</UserInfo> |{' '}
               <LogoutButton onClick={doLogout}>Выход</LogoutButton>
-            </>
+            </UserInfoWrappper>
           ) : (
-            <>
+            <UserInfoWrappper>
+              <AuthImg src={authImg} />
               <Link
                 to="/"
                 onClick={() => {
@@ -77,7 +104,7 @@ export const Start = () => {
               >
                 Регистрация
               </Link>
-            </>
+            </UserInfoWrappper>
           )}
         </LinkContainer>
       </Auth>

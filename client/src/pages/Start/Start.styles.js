@@ -50,14 +50,13 @@ export const StartWrapper = styled.section`
 `
 export const Auth = styled.section`
   position: fixed;
-  top: 2rem;
-  right: 2rem;
-  height: 4rem;
+  right: 0;
 `
 export const LinkContainer = styled.div`
   height: 4rem;
   display: flex;
-  padding-top: 1.8rem;
+  margin-top: 35px;
+  margin-right: 25px;
   a {
     color: #424242;
     text-transform: uppercase;
@@ -74,6 +73,7 @@ export const LinkContainer = styled.div`
   }
 `
 export const AuthImg = styled.img`
+  margin-top: -10px;
   width: 4rem;
   float: left;
   opacity: 0.8;
@@ -179,4 +179,26 @@ export const LogoutButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
+`
+
+export const UserInfoWrappper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+export const UserInfo = styled.span`
+  margin-right: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &:last-of-type {
+    margin-right: 10px;
+  }
+`
+
+export const UserInfoEmoji = styled.span`
+  font-size: 30px;
+  margin-right: 10px;
 `
