@@ -22,7 +22,7 @@ module.exports = {
       user: 'hosting',
       host: '95.181.152.127',
       ref: 'origin/master',
-      repo: 'git@github.com:98o718/battleship.git',
+      repo: 'https://github.com/98o718/battleship.git',
       path: '/home/hosting/battleship-server',
       'post-deploy':
         'cd server && yarn && pm2 reload ecosystem.config.js --env production',
