@@ -16,10 +16,7 @@ before_install:
   - eval "$(ssh-agent -s)"
   - chmod 600 ./deploy_key
   - ssh-add ./deploy_key
-  - echo -e "Host ${DEPLOY_HOST}\n\tStrictHostKeyChecking no\n" >> $HOME/.ssh/config
+  - echo -e "Host 95.181.152.127\n\tStrictHostKeyChecking no\n" >> $HOME/.ssh/config
 script: echo "skipping test..."
 after_success:
   - bash ./deploy.sh
-env:
-  global:
-    secure: Knq3RNRWso3B/nxKMRyGlAtDyFhesQSQzi57DR1P66T5diNJxZ+kJWrfBn/Ddg9QDxNCfLoAp3XODUnvrf8PQZY5xzytODLiWR+yRJ53mdiTd9RWK62OZo7QgXvzkqGfF+fumJY+37YcuyEGOBJRKXjsZCX+aTib39MZiPNyhL4cItFQBGxanSzkl+zSwK4s4OthdIUVbQNPdvwvAFVt8cVV2ZenUr1+nflfviOKYirqsOgV38PE6Tut5GoqK0fPwr66JzLsY1OuiBbZgyYq8FxnhcnaiuMiQgvc7T/7rWoboTGWDypqDaBPmZnh/0Eh8qn3GEpjhviN67mKZ6Une/Q5yOvYfFzIBX6LJSIcNiUBRpKE+n3oQKWaB5egDTp4JsgADcYrxxlN9GDv5Vk4rechuPvRjaL0klPOA8DSaAWKX1CdeCfWcVJBuRtTBFxouQgyW0Is58isy/0Ew2tRWFbZYRwgO+HkF8XUh5wVHYjc0eI7i7koVOg5VqrJ38o59S1r+KFRz/4kmcUnWkLV8sFknIBvQG2vRgOS6og4hfbOJQYtzGakVP5hQBjd2XfSWJiJIR2qyLi612wLvi66kgh/S3Xmnw6KD69vGPKjyCreIayebE7wLclSlKxutppFPenZRtxGF3ohjpNvrD0oPFyd2Ij1QGa7v1wfPJHwjCo=

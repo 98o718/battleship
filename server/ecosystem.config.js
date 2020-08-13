@@ -20,7 +20,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'travis',
-      host: '51.15.124.103',
+      host: '95.181.152.127',
       ref: 'origin/master',
       repo: 'git@github.com:98o718/battleship.git',
       path: '/home/travis/battleship-server',
